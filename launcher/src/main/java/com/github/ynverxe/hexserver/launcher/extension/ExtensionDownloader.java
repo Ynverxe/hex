@@ -1,4 +1,4 @@
-package com.github.ynverxe.hexserver.launcher;
+package com.github.ynverxe.hexserver.launcher.extension;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
