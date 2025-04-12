@@ -1,0 +1,6 @@
+{
+  "name": "LuckPerms",
+  "entrypoint": "com.github.ynverxe.hexserver.luckperms.LuckPermsExtension",
+  "version": "0.1.0",
+  "authors": ["Ynverxe"]
+}

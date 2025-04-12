@@ -1,0 +1,1 @@
+file:///home/nahu/IdeaProjects/hex-server/luckperms-as-extension/build/libs/luckperms-as-extension-0.1.0-all.jar

@@ -1,0 +1,12 @@
+list-worlds:
+  header: "There's a total of {count} worlds registered."
+  entry: "- {key}, {path}, {loader}"
+world-info:
+  - "Key: {key}"
+  - "UUID: {uuid}"
+  - "Path: {path}"
+  - "Dimension: {dimension}"
+  - "Loader: {loader}"
+  - "Generator: {generator}"
+  - "Player count: {player count}"
+  - "Entity count (non players): {entity count}"

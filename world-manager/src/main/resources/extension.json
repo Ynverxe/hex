@@ -1,0 +1,6 @@
+{
+  "name": "WorldManager",
+  "entrypoint": "com.github.ynverxe.hexserver.worldimporter.WorldImporterExtension",
+  "version": "0.1.0",
+  "authors": ["Ynverxe"]
+}

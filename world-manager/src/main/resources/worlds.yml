@@ -1,0 +1,9 @@
+- name: "world"
+  generator:
+    type: "default:flat"
+    data:
+      layers: "minecraft:bedrock,2*minecraft:dirt,minecraft:grass_block;minecraft:plains"
+  loader: "default:polar"
+  path: "world.polar"
+  properties: {}
+  dimension: "minecraft:overworld"
