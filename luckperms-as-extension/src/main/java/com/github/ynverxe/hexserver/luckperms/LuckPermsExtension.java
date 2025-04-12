@@ -10,7 +10,6 @@ import net.minestom.server.ServerProcess;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 public class LuckPermsExtension extends HexExtension {
 
@@ -25,9 +24,10 @@ public class LuckPermsExtension extends HexExtension {
       initResourceIfMissing("luckperms.conf", "luckperms.conf");
 
       ServerProcess process = HexServer.instance().process();
+
       this.luckPerms = LuckPermsMinestom.builder(this.getDataDirectory().resolve("LuckPerms"))
           .commandRegistry(CommandRegistry.of(process.command()::register, process.command()::unregister))
-          .configurationAdapter(lpMinestomPlugin -> new ConfigurateConfigAdapter(lpMinestomPlugin, Paths.get("LuckPerms/luckperms.conf")))
+          .configurationAdapter(lpMinestomPlugin -> new ConfigurateConfigAdapter(lpMinestomPlugin, this))
           .dependencyManager(true)
           .enable();
     } catch (IOException e) {

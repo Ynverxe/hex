@@ -1,8 +1,7 @@
 package com.github.ynverxe.hexserver.luckperms.config;
 
 import com.github.ynverxe.configuratehelper.handler.FastConfiguration;
-import com.github.ynverxe.configuratehelper.handler.content.ContentChannel;
-import com.github.ynverxe.hexserver.HexServer;
+import com.github.ynverxe.hexserver.luckperms.LuckPermsExtension;
 import io.leangen.geantyref.TypeToken;
 import me.lucko.luckperms.common.config.generic.adapter.ConfigurationAdapter;
 import me.lucko.luckperms.common.plugin.LuckPermsPlugin;
@@ -10,7 +9,6 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,14 +18,14 @@ public class ConfigurateConfigAdapter implements ConfigurationAdapter {
   private final LuckPermsPlugin plugin;
   private final FastConfiguration configuration;
 
-  public ConfigurateConfigAdapter(LuckPermsPlugin plugin, Path path) {
+  public ConfigurateConfigAdapter(LuckPermsPlugin plugin, LuckPermsExtension extension) {
     this.plugin = plugin;
     try {
-      this.configuration = HexServer.instance().configurationFactory()
+      this.configuration = extension.configurationFactory()
           .toBuilder()
           .configurationLoaderFactory(HoconConfigurationLoader::builder)
           .build()
-          .create(null, path);
+          .create(null, "luckperms.conf");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
