@@ -2,7 +2,7 @@
 minestom = "net.minestom:Minestom:."
 minestom-extensions = "dev.hollowcube:minestom-ce-extensions:1.2.0"
 configurate = "org.spongepowered:configurate-core:4.0.0"
-configurate-json = "org.spongepowered:configurate-yaml:4.0.0"
+configurate-yaml = "org.spongepowered:configurate-yaml:4.0.0"
 configurate-hocon = "org.spongepowered:configurate-hocon:4.0.0"
 configurate-helper = "com.github.ynverxe:configurate-helper:."
 polar = "dev.hollowcube:polar:1.14.0"
@@ -12,4 +12,4 @@ adventure-minimessage = "net.kyori:adventure-text-minimessage:4.19.0"
 luckperms = "dev.lu15:luckperms-minestom:5.4-SNAPSHOT"
 
 [bundles]
-core-base = ["minestom", "configurate", "configurate-helper", "configurate-json", "configurate-hocon", "polar", "adventure-minimessage"]
+core-base = ["minestom", "configurate", "configurate-helper", "configurate-yaml", "configurate-hocon", "polar", "adventure-minimessage"]
