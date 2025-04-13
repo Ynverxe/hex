@@ -19,8 +19,7 @@ public class HexServerLauncher {
 
     // Download extensions
     ExtensionDownloader downloader = new ExtensionDownloader(runDirPath);
-    //downloader.start();
-
+    downloader.start();
     HexServerInitializer initializer = new HexServerInitializer(runDirPath);
 
     if (!isArgumentPresent(DONT_REGISTER_DEFAULT_COMMANDS_ARGUMENT, args)) {
