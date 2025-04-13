@@ -1,24 +1,24 @@
 package com.github.ynverxe.hexserver.launcher.extension;
 
+import io.leangen.geantyref.TypeToken;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.*;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.UserDefinedFileAttributeView;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
 
 import static java.nio.file.Files.*;
 
@@ -26,18 +26,7 @@ public class ExtensionDownloader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionDownloader.class);
 
-  private static final Charset CHARSET = StandardCharsets.UTF_8;
-  private static final Function<String, URL> SAFE_URL_MAPPER = line -> {
-    try {
-      return new URI(line).toURL();
-    } catch (MalformedURLException | URISyntaxException e) {
-      LOGGER.error("Cannot process URL {}", line, e);
-      return null;
-    }
-  };
-
-  private static final String SOURCE_ATTRIBUTE_KEY = "extension-source";
-  private static final String MANIFEST_FILENAME = "extensions_manifest.txt";
+  private static final String MANIFEST_FILENAME = "extensions_manifest.json";
 
   private final @NotNull Path serverRootDir;
   private final @NotNull Path extensionManifestPath;
@@ -59,60 +48,66 @@ public class ExtensionDownloader {
       return false;
     }
 
-    List<URL> urls = readManifest();
-    removePresentExtensions(urls);
-    if (urls.isEmpty()) {
+    Map<String, URL> extensions = readManifest();
+    removePresentExtensions(extensions);
+    if (extensions.isEmpty()) {
       LOGGER.info("No extensions to download");
       return false;
     }
 
-    downloadExtensionFiles(urls);
+    downloadExtensionFiles(extensions);
     return true;
   }
 
-  private void downloadExtensionFiles(@NotNull List<URL> urls) {
+  private void downloadExtensionFiles(@NotNull Map<String, URL> urls) {
     LOGGER.info("Downloading extensions.");
 
-    for (URL url : urls) {
+    urls.forEach((extension, url) -> {
       try {
-        downloadExtension(url);
+        downloadExtension(extension, url);
       } catch (Exception e) {
         LOGGER.error("Cannot download file: {}", url, e);
       }
-    }
+    });
   }
 
-  private void removePresentExtensions(@NotNull List<URL> urls) throws IOException {
+  private void removePresentExtensions(@NotNull Map<String, URL> urls) throws IOException {
     if (!exists(this.extensionDirPath)) {
       return;
     }
 
     try (Stream<Path> files = list(this.extensionDirPath)) {
       for (Path path : files.toArray(Path[]::new)) {
-        var view = getFileAttributeView(path, UserDefinedFileAttributeView.class);
+        if (!path.toString().endsWith(".jar")) continue;
 
-        if (!view.list().contains(SOURCE_ATTRIBUTE_KEY)) {
-          continue;
+        try (JarFile jarFile = new JarFile(path.toFile())) {
+          String name = readExtensionManifest(jarFile)
+              .node("name").getString();
+
+          if (name == null) { // Invalid extension
+            continue;
+          }
+
+          urls.remove(name);
         }
-
-        // read attribute
-        int size = view.size(SOURCE_ATTRIBUTE_KEY);
-
-        if (size == 0) continue;
-
-        ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-        view.read(SOURCE_ATTRIBUTE_KEY, byteBuffer);
-        byteBuffer.flip();
-
-        char[] array = CHARSET.decode(byteBuffer).array();
-        String urlString = new String(array);
-
-        urls.removeIf(url -> url.toString().equals(urlString));
       }
     }
   }
 
-  private void downloadExtension(@NotNull URL url) throws IOException {
+  private ConfigurationNode readExtensionManifest(JarFile jarFile) throws IOException {
+    ZipEntry entry = jarFile.getEntry("extension.json");
+
+    if (entry == null) return null;
+
+    InputStream stream = jarFile.getInputStream(entry);
+
+    return GsonConfigurationLoader.builder()
+        .source(() -> new BufferedReader(new InputStreamReader(stream)))
+        .build()
+        .load();
+  }
+
+  private void downloadExtension(@NotNull String extension, @NotNull URL url) throws IOException {
     long start = System.currentTimeMillis();
     URLConnection connection = url.openConnection();
     connection.setUseCaches(false);
@@ -127,28 +122,31 @@ public class ExtensionDownloader {
       }
 
       Path filePath = this.extensionDirPath.resolve(fileName);
+      if (exists(filePath)) {
+        delete(filePath);
+      }
+
       copy(stream, filePath);
 
-      try {
-        checkExtensionFileIsPresent(filePath);
+      JarFile file = new JarFile(filePath.toFile());
+      ZipEntry entry = file.getEntry("extension.json");
 
-        var view = getFileAttributeView(filePath, UserDefinedFileAttributeView.class);
-        ByteBuffer buffer = CHARSET.encode(url.toString());
-        view.write(SOURCE_ATTRIBUTE_KEY, buffer);
-      } catch (Exception e) {
+      try {
+        if (entry == null) {
+          throw new IllegalStateException("Jar file is not an extension (missing extension.json)");
+        }
+
+        ConfigurationNode extensionManifest = readExtensionManifest(file);
+        if (!extension.equals(extensionManifest.node("name").getString())) {
+          throw new IllegalStateException("Declared extension '" + extension + "' in extensions_manifest.json doesn't match with the downloaded extension manifest name");
+        }
+      } catch (RuntimeException e) {
+        file.close();
         delete(filePath);
         throw e;
       }
 
       LOGGER.info("Extension {} downloaded in {}ms", fileName, System.currentTimeMillis() - start);
-    }
-  }
-
-  private void checkExtensionFileIsPresent(Path path) throws IOException {
-    try (JarFile file = new JarFile(path.toFile())) {
-      if (file.getEntry("extension.json") == null) {
-        throw new IllegalStateException("Jar file is not an extension (missing extension.json)");
-      }
     }
   }
 
@@ -169,12 +167,12 @@ public class ExtensionDownloader {
     return fileName;
   }
 
-  private List<URL> readManifest() throws IOException {
-    try (Stream<String> lines = lines(this.extensionManifestPath)) {
-      return lines.map(SAFE_URL_MAPPER)
-          .filter(Objects::nonNull)
-          .collect(Collectors.toList());
-    }
+  private Map<String, URL> readManifest() throws IOException {
+    ConfigurationNode configurationNode = GsonConfigurationLoader.builder()
+        .file(this.extensionManifestPath.toFile())
+        .build().load();
+
+    return configurationNode.get(new TypeToken<Map<String, URL>>() {});
   }
 
   private boolean canStart() throws IOException {
