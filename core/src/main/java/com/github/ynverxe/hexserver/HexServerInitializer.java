@@ -2,7 +2,6 @@ package com.github.ynverxe.hexserver;
 
 import com.github.ynverxe.configuratehelper.handler.FastConfiguration;
 import com.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
-import com.github.ynverxe.hexserver.command.DefaultCommandsRegister;
 import com.github.ynverxe.hexserver.internal.configuration.ServerConfiguration;
 import com.github.ynverxe.hexserver.internal.listener.DefaultListenersRegister;
 import com.github.ynverxe.hexserver.terminal.ServerTerminal;
@@ -37,7 +36,6 @@ public final class HexServerInitializer {
   private final ServerProcess process;
 
   private boolean registerDefaultListeners;
-  private boolean registerDefaultCommands;
 
   // I make my own ExtensionManager, because I don't like that ExtensionBootstrap starts the extensions on #init
   // That causes Extensions being loaded and expecting that HexServer#INSTANCE was initialized
@@ -87,12 +85,6 @@ public final class HexServerInitializer {
     return this;
   }
 
-  @Contract("-> this")
-  public HexServerInitializer registerDefaultCommands() {
-    this.registerDefaultCommands = true;
-    return this;
-  }
-
   public @NotNull HexServer start() throws IOException, ClassNotFoundException {
     return start(this.serverConfigurationValues.ip(), this.serverConfigurationValues.port());
   }
@@ -121,10 +113,6 @@ public final class HexServerInitializer {
 
       if (registerDefaultListeners) {
         DefaultListenersRegister.register(this.process.eventHandler(), server);
-      }
-
-      if (registerDefaultCommands) {
-        DefaultCommandsRegister.register(this.process.command(), server);
       }
 
       ServerTerminal.INSTANCE.start();
