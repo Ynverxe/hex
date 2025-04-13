@@ -2,6 +2,7 @@ package com.github.ynverxe.hexserver.worldimporter;
 
 import com.github.ynverxe.configuratehelper.handler.FastConfiguration;
 import com.github.ynverxe.hexserver.extension.HexExtension;
+import com.github.ynverxe.hexserver.util.MessageHandler;
 import com.github.ynverxe.hexserver.worldimporter.command.GoToWorld;
 import com.github.ynverxe.hexserver.worldimporter.command.ListWorldsCommand;
 import com.github.ynverxe.hexserver.worldimporter.command.LoadWorldCommand;
@@ -19,6 +20,7 @@ public class WorldImporterExtension extends HexExtension {
   private static final Logger LOGGER = LoggerFactory.getLogger(WorldImporterExtension.class);
 
   private WorldImporter importer;
+  private MessageHandler messageHandler;
 
   public WorldImporterExtension() throws IOException {
   }
@@ -27,6 +29,7 @@ public class WorldImporterExtension extends HexExtension {
   public void initialize() {
     try {
       this.importer = new WorldImporter(worldManager());
+      this.messageHandler = new MessageHandler(configurationFactory());
 
       MinecraftServer.getCommandManager().register(
           new ListWorldsCommand(this), new WorldInfoCommand(this), new LoadWorldCommand(this.importer), new GoToWorld());
@@ -58,5 +61,9 @@ public class WorldImporterExtension extends HexExtension {
 
   public WorldImporter importer() {
     return importer;
+  }
+
+  public MessageHandler messageHandler() {
+    return messageHandler;
   }
 }
