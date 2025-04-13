@@ -1,12 +1,12 @@
-package com.github.ynverxe.hexserver.worldimporter;
+package com.github.ynverxe.hexserver.worldmanager;
 
 import com.github.ynverxe.configuratehelper.handler.FastConfiguration;
 import com.github.ynverxe.hexserver.extension.HexExtension;
 import com.github.ynverxe.hexserver.util.MessageHandler;
-import com.github.ynverxe.hexserver.worldimporter.command.GoToWorld;
-import com.github.ynverxe.hexserver.worldimporter.command.ListWorldsCommand;
-import com.github.ynverxe.hexserver.worldimporter.command.LoadWorldCommand;
-import com.github.ynverxe.hexserver.worldimporter.command.WorldInfoCommand;
+import com.github.ynverxe.hexserver.worldmanager.command.GoToWorld;
+import com.github.ynverxe.hexserver.worldmanager.command.ListWorldsCommand;
+import com.github.ynverxe.hexserver.worldmanager.command.LoadWorldCommand;
+import com.github.ynverxe.hexserver.worldmanager.command.WorldInfoCommand;
 import io.leangen.geantyref.TypeToken;
 import net.minestom.server.MinecraftServer;
 import org.slf4j.Logger;
@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class WorldImporterExtension extends HexExtension {
+public class WorldManagerExtension extends HexExtension {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(WorldImporterExtension.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WorldManagerExtension.class);
 
   private WorldImporter importer;
   private MessageHandler messageHandler;
 
-  public WorldImporterExtension() throws IOException {
+  public WorldManagerExtension() throws IOException {
   }
 
   @Override

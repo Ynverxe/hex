@@ -1,14 +1,14 @@
-package com.github.ynverxe.hexserver.worldimporter;
+package com.github.ynverxe.hexserver.worldmanager;
 
 import com.github.ynverxe.hexserver.HexServer;
 import com.github.ynverxe.hexserver.util.KeyHashMap;
 import com.github.ynverxe.hexserver.world.HexWorld;
 import com.github.ynverxe.hexserver.world.HexWorldManager;
-import com.github.ynverxe.hexserver.worldimporter.gen.FlatGenerator;
-import com.github.ynverxe.hexserver.worldimporter.gen.GeneratorFactory;
-import com.github.ynverxe.hexserver.worldimporter.load.AnvilHexWorldLoader;
-import com.github.ynverxe.hexserver.worldimporter.load.HexWorldLoader;
-import com.github.ynverxe.hexserver.worldimporter.load.PolarHexWorldLoader;
+import com.github.ynverxe.hexserver.worldmanager.gen.FlatGenerator;
+import com.github.ynverxe.hexserver.worldmanager.gen.GeneratorFactory;
+import com.github.ynverxe.hexserver.worldmanager.load.AnvilHexWorldLoader;
+import com.github.ynverxe.hexserver.worldmanager.load.HexWorldLoader;
+import com.github.ynverxe.hexserver.worldmanager.load.PolarHexWorldLoader;
 import net.kyori.adventure.key.Key;
 import net.minestom.server.instance.generator.Generator;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package com.github.ynverxe.hexserver.worldimporter;
+package com.github.ynverxe.hexserver.worldmanager;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
