@@ -1,4 +1,4 @@
-package com.github.ynverxe.hexserver.worldimporter.command;
+package com.github.ynverxe.hexserver.worldmanager.command;
 
 import com.github.ynverxe.hexserver.command.argument.HexArgumentTypes;
 import com.github.ynverxe.hexserver.world.HexWorld;

@@ -1,11 +1,10 @@
-package com.github.ynverxe.hexserver.worldimporter.command;
+package com.github.ynverxe.hexserver.worldmanager.command;
 
 import com.github.ynverxe.hexserver.HexServer;
-import com.github.ynverxe.hexserver.command.argument.KyoriKeyArgumentMapper;
 import com.github.ynverxe.hexserver.world.HexWorldManager;
-import com.github.ynverxe.hexserver.worldimporter.WorldConfigDefinition;
-import com.github.ynverxe.hexserver.worldimporter.WorldImporter;
-import com.github.ynverxe.hexserver.worldimporter.load.HexWorldLoader;
+import com.github.ynverxe.hexserver.worldmanager.WorldConfigDefinition;
+import com.github.ynverxe.hexserver.worldmanager.WorldImporter;
+import com.github.ynverxe.hexserver.worldmanager.load.HexWorldLoader;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;

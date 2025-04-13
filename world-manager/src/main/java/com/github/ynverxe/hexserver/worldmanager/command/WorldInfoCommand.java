@@ -1,10 +1,10 @@
-package com.github.ynverxe.hexserver.worldimporter.command;
+package com.github.ynverxe.hexserver.worldmanager.command;
 
 import com.github.ynverxe.hexserver.command.argument.HexArgumentTypes;
 import com.github.ynverxe.hexserver.util.MessageHandler;
-import com.github.ynverxe.hexserver.worldimporter.WorldImporterExtension;
+import com.github.ynverxe.hexserver.worldmanager.WorldManagerExtension;
 import com.github.ynverxe.hexserver.world.HexWorld;
-import com.github.ynverxe.hexserver.worldimporter.load.HexWorldLoader;
+import com.github.ynverxe.hexserver.worldmanager.load.HexWorldLoader;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.Argument;
@@ -12,7 +12,7 @@ import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class WorldInfoCommand extends Command {
-  public WorldInfoCommand(@NotNull WorldImporterExtension extension) {
+  public WorldInfoCommand(@NotNull WorldManagerExtension extension) {
     super("world-info", "winfo", "wi");
 
     MessageHandler messageHandler = extension.messageHandler();

@@ -1,16 +1,16 @@
-package com.github.ynverxe.hexserver.worldimporter.command;
+package com.github.ynverxe.hexserver.worldmanager.command;
 
 import com.github.ynverxe.hexserver.HexServer;
 import com.github.ynverxe.hexserver.internal.message.MessageHandler;
 import com.github.ynverxe.hexserver.world.HexWorldManager;
-import com.github.ynverxe.hexserver.worldimporter.WorldImporterExtension;
-import com.github.ynverxe.hexserver.worldimporter.load.HexWorldLoader;
+import com.github.ynverxe.hexserver.worldmanager.WorldManagerExtension;
+import com.github.ynverxe.hexserver.worldmanager.load.HexWorldLoader;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
 import org.jetbrains.annotations.NotNull;
 
 public class ListWorldsCommand extends Command {
-  public ListWorldsCommand(@NotNull WorldImporterExtension extension) {
+  public ListWorldsCommand(@NotNull WorldManagerExtension extension) {
     super("list-worlds", "lws", "lw");
 
     HexServer server = HexServer.instance();

@@ -1,7 +1,7 @@
-package com.github.ynverxe.hexserver.worldimporter.load;
+package com.github.ynverxe.hexserver.worldmanager.load;
 
 import com.github.ynverxe.hexserver.world.HexWorld;
-import com.github.ynverxe.hexserver.worldimporter.WorldConfigDefinition;
+import com.github.ynverxe.hexserver.worldmanager.WorldConfigDefinition;
 import net.kyori.adventure.key.Key;
 import net.minestom.server.instance.IChunkLoader;
 import net.minestom.server.registry.DynamicRegistry;

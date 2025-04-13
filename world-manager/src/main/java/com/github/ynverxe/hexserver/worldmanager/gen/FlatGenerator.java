@@ -1,6 +1,6 @@
-package com.github.ynverxe.hexserver.worldimporter.gen;
+package com.github.ynverxe.hexserver.worldmanager.gen;
 
-import com.github.ynverxe.hexserver.worldimporter.WorldConfigDefinition;
+import com.github.ynverxe.hexserver.worldmanager.WorldConfigDefinition;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.generator.GenerationUnit;
 import net.minestom.server.instance.generator.Generator;
