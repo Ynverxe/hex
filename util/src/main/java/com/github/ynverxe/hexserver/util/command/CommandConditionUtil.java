@@ -1,4 +1,4 @@
-package com.github.ynverxe.hexserver.command;
+package com.github.ynverxe.hexserver.util.command;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
