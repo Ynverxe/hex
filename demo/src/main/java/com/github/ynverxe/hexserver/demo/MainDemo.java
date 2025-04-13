@@ -9,7 +9,6 @@ public class MainDemo {
   public static void main(String[] args) throws Exception {
     HexServerInitializer hexServerInitializer = new HexServerInitializer(Paths.get(System.getProperty("user.dir")  + "/run"));
     hexServerInitializer.registerDefaultListeners();
-    hexServerInitializer.registerDefaultCommands();
     hexServerInitializer.start();
   }
 }

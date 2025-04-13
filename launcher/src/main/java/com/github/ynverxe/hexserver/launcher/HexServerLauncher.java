@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 
 public class HexServerLauncher {
 
-  public static final String DONT_REGISTER_DEFAULT_COMMANDS_ARGUMENT = "DontRegisterDefaultCommands";
   public static final String DONT_REGISTER_DEFAULT_LISTENERS_ARGUMENT = "DontRegisterDefaultListeners";
 
   public static void main(String[] args) throws Exception {
@@ -21,10 +20,6 @@ public class HexServerLauncher {
     ExtensionDownloader downloader = new ExtensionDownloader(runDirPath);
     downloader.start();
     HexServerInitializer initializer = new HexServerInitializer(runDirPath);
-
-    if (!isArgumentPresent(DONT_REGISTER_DEFAULT_COMMANDS_ARGUMENT, args)) {
-      initializer.registerDefaultCommands();
-    }
 
     if (!isArgumentPresent(DONT_REGISTER_DEFAULT_LISTENERS_ARGUMENT, args)) {
       initializer.registerDefaultListeners();
