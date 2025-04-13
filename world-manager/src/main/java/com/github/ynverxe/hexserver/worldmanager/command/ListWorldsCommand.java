@@ -1,7 +1,7 @@
 package com.github.ynverxe.hexserver.worldmanager.command;
 
 import com.github.ynverxe.hexserver.HexServer;
-import com.github.ynverxe.hexserver.internal.message.MessageHandler;
+import com.github.ynverxe.hexserver.util.MessageHandler;
 import com.github.ynverxe.hexserver.world.HexWorldManager;
 import com.github.ynverxe.hexserver.worldmanager.WorldManagerExtension;
 import com.github.ynverxe.hexserver.worldmanager.load.HexWorldLoader;
