@@ -27,3 +27,4 @@ includeBuild("../Minestom") {
 }
 include("luckperms-as-extension")
 include("launcher")
+include("util")
