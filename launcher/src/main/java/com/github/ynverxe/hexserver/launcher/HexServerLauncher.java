@@ -2,6 +2,7 @@ package com.github.ynverxe.hexserver.launcher;
 
 import com.github.ynverxe.hexserver.HexServerInitializer;
 import com.github.ynverxe.hexserver.launcher.extension.ExtensionDownloader;
+import com.github.ynverxe.hexserver.launcher.extension.ServerDirectorySchemeCopier;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
