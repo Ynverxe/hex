@@ -1,5 +1,6 @@
 package com.github.ynverxe.hexserver.launcher.extension;
 
+import com.github.ynverxe.hexserver.launcher.util.ConnectionMaker;
 import io.leangen.geantyref.TypeToken;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -109,10 +110,7 @@ public class ExtensionDownloader {
 
   private void downloadExtension(@NotNull String extension, @NotNull URL url) throws IOException {
     long start = System.currentTimeMillis();
-    URLConnection connection = url.openConnection();
-    connection.setUseCaches(false);
-    connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-    connection.connect();
+    URLConnection connection = ConnectionMaker.make(url);
 
     try (InputStream stream = connection.getInputStream()) {
       String fileName = getFileName(connection);
