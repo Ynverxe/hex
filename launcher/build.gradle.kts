@@ -5,9 +5,7 @@ plugins {
 
 dependencies {
     implementation(project(":core"))
-    implementation(libs.tiny.log.impl)
-    implementation(libs.tiny.log.slf4j)
-    implementation(libs.adventure.ansi)
+
     implementation(libs.configurate.json)
     //implementation("org.jetbrains:annotations:24.0.0")
 

@@ -1,4 +1,4 @@
-package com.github.ynverxe.hexserver.launcher.log;
+package com.github.ynverxe.hexserver.log;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
