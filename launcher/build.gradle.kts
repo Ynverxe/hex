@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation(project(":core"))
 
+    implementation(libs.dependency.getter)
     implementation(libs.configurate.json)
     //implementation("org.jetbrains:annotations:24.0.0")
 
