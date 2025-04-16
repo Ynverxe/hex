@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.bundles.core.base)
-    implementation(project(":core"))
+    compileOnly(project(":core"))
     implementation(project(":util"))
 }
