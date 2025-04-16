@@ -1,7 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
-
 plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.0"
@@ -26,21 +22,6 @@ tasks.named<Test>("test") {
 
     testLogging {
         events("passed")
-    }
-}
-
-tasks.named<ShadowJar>("shadowJar") {
-    exclude("META-INF/services/net.kyori.adventure.text.logger.slf4j.ComponentLoggerProvider")
-
-    mergeServiceFiles {
-    }
-
-    val serviceFile = file("src/main/resources/META-INF/services/net.kyori.adventure.text.logger.slf4j.ComponentLoggerProvider")
-    val tmpDir = temporaryDir.resolve("META-INF/services")
-    tmpDir.mkdirs()
-    Files.copy(serviceFile.toPath(), tmpDir.resolve("net.kyori.adventure.text.logger.slf4j.ComponentLoggerProvider").toPath(), StandardCopyOption.REPLACE_EXISTING)
-    from(tmpDir) {
-        into("META-INF/services")
     }
 }
 
