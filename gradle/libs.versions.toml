@@ -1,6 +1,7 @@
 [libraries]
 minestom = "net.minestom:Minestom:."
 minestom-extensions = "dev.hollowcube:minestom-ce-extensions:1.2.0"
+dependency-getter = "com.github.Minestom:DependencyGetter:v1.0.1"
 configurate = "org.spongepowered:configurate-core:4.0.0"
 configurate-yaml = "org.spongepowered:configurate-yaml:4.0.0"
 configurate-json = "org.spongepowered:configurate-gson:4.0.0"
