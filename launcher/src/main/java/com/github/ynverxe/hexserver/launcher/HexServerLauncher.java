@@ -34,7 +34,7 @@ public class HexServerLauncher {
 
   private static boolean isArgumentPresent(@NotNull String argument, @NotNull String[] args) {
     for (@NotNull String arg : args) {
-      if (("-" + argument).equals(arg)) {
+      if (("--" + argument).equals(arg)) {
         return true;
       }
     }
