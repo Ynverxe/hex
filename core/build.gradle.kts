@@ -5,6 +5,7 @@ plugins {
 dependencies {
     api(libs.bundles.core.base)
     api(libs.minestom.extensions)
+    compileOnlyApi(libs.minestom)
 
     // logging
     implementation(libs.adventure.ansi)
