@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "8.3.0"
+    id("com.gradleup.shadow") version "9.0.0-beta12"
 }
 
 dependencies {
@@ -22,6 +22,20 @@ tasks.named<Test>("test") {
     testLogging {
         events("passed")
     }
+}
+
+tasks.shadowJar {
+    dependsOn(":core:shadowJar")
+
+    // Include core-all.jar inside launcher's fatJar
+    val coreFatJar = project.project(":core")
+        .tasks
+        .named<Jar>("shadowJar")
+        .get()
+        .archiveFile
+        .get()
+
+    from(coreFatJar)
 }
 
 tasks.jar {
