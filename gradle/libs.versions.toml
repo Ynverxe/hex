@@ -15,4 +15,4 @@ adventure-ansi = "net.kyori:adventure-text-serializer-ansi:4.19.0"
 luckperms = "dev.lu15:luckperms-minestom:5.4-SNAPSHOT"
 
 [bundles]
-core-base = ["minestom", "configurate", "configurate-helper", "configurate-yaml", "configurate-hocon", "polar", "adventure-minimessage"]
+core-base = ["configurate", "configurate-helper", "configurate-yaml"]
