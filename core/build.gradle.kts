@@ -1,5 +1,6 @@
 plugins {
     id("java-library")
+    id("com.gradleup.shadow") version "8.3.0"
 }
 
 dependencies {
@@ -12,8 +13,10 @@ dependencies {
     implementation(libs.tiny.log.impl)
     implementation(libs.tiny.log.slf4j)
 
-    implementation(kotlin("stdlib", "1.5.0"))
-    implementation("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-depchain:3.1.4")
     runtimeOnly(kotlin("stdlib", "1.5.0"))
     runtimeOnly("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-depchain:3.1.4")
+}
+
+tasks.shadowJar {
+    archiveFileName = "core-all.jar"
 }
