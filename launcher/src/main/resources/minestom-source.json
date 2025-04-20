@@ -1,0 +1,8 @@
+{
+  "url": "",
+  "coordinates": "net.minestom:minestom-snapshots:7320437640",
+  "repositories": [
+    "https://repo1.maven.org/maven2/",
+    "https://jitpack.io"
+  ]
+}
