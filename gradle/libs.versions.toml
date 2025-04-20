@@ -13,6 +13,11 @@ tiny-log-impl = "org.tinylog:tinylog-impl:2.7.0"
 adventure-minimessage = "net.kyori:adventure-text-minimessage:4.19.0"
 adventure-ansi = "net.kyori:adventure-text-serializer-ansi:4.19.0"
 luckperms = "dev.lu15:luckperms-minestom:5.4-SNAPSHOT"
+maven-connector-basic = "org.apache.maven.resolver:maven-resolver-connector-basic:1.9.22"
+maven-transport-http = "org.apache.maven.resolver:maven-resolver-transport-http:1.9.22"
+maven-resolver = "org.apache.maven:maven-resolver-provider:3.9.9"
 
 [bundles]
 core-base = ["configurate", "configurate-helper", "configurate-yaml"]
+maven = ["maven-resolver", "maven-connector-basic", "maven-transport-http"]
+logging = ["tiny-log-slf4j", "tiny-log-impl"]
