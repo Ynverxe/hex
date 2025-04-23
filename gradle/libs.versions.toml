@@ -17,6 +17,7 @@ luckperms = "dev.lu15:luckperms-minestom:5.4-SNAPSHOT"
 maven-connector-basic = "org.apache.maven.resolver:maven-resolver-connector-basic:1.9.22"
 maven-transport-http = "org.apache.maven.resolver:maven-resolver-transport-http:1.9.22"
 maven-resolver = "org.apache.maven:maven-resolver-provider:3.9.9"
+jetbrains-annotations = "org.jetbrains:annotations:24.0.0"
 
 [bundles]
 core-base = ["configurate", "configurate-helper", "configurate-yaml"]

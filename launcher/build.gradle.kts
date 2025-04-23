@@ -4,14 +4,20 @@ plugins {
 }
 
 dependencies {
+    // logging
     implementation(libs.adventure.slf4j)
     implementation(project(":logging"))
 
+    // local and remote repository handling
     implementation(libs.bundles.maven)
 
+    // configuration files
     implementation(libs.configurate.json)
-    implementation("org.jetbrains:annotations:24.0.0")
 
+    // annotations
+    compileOnly(libs.jetbrains.annotations)
+
+    // testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
