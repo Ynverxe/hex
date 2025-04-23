@@ -4,7 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.bundles.logging)
+    implementation(libs.adventure.slf4j)
+    implementation(project(":logging"))
 
     implementation(libs.bundles.maven)
 
@@ -37,6 +38,8 @@ tasks.shadowJar {
         .get()
 
     from(coreFatJar)
+
+    mergeServiceFiles()
 }
 
 tasks.jar {
