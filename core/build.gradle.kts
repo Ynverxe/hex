@@ -9,9 +9,7 @@ dependencies {
     compileOnlyApi(libs.minestom)
 
     // logging
-    implementation(libs.adventure.ansi)
-    implementation(libs.tiny.log.impl)
-    implementation(libs.tiny.log.slf4j)
+    implementation(project(":logging"))
 
     runtimeOnly(kotlin("stdlib", "1.5.0"))
     runtimeOnly("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-depchain:3.1.4")

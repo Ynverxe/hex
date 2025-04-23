@@ -1,4 +1,4 @@
-package com.github.ynverxe.hexserver.log;
+package com.github.ynverxe.hexserver.logging;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -45,7 +45,7 @@ public class HexWriter extends AbstractFormatPatternWriter {
     return switch (entry.getLevel()) {
       case WARN -> NamedTextColor.YELLOW;
       case ERROR, TRACE -> NamedTextColor.RED;
-      case DEBUG -> NamedTextColor.DARK_PURPLE;
+      case DEBUG -> NamedTextColor.LIGHT_PURPLE;
       default -> null;
     };
   }
