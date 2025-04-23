@@ -99,9 +99,9 @@ public class LibraryDownloader {
 
     this.classpathUrls.add(tempCoreJar.toURI().toURL()); // :core module overrides MinestomComponentLoggerProvider so the :core jar must be at start of classpath
 
-    downloadDependencies();
-
     EnvironmentLogger.logComponentsInfo(tempCoreJar.toPath());
+
+    downloadDependencies();
   }
 
   public List<URL> urls() {
