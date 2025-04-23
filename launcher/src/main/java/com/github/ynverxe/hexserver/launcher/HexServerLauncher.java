@@ -4,6 +4,7 @@ import com.github.ynverxe.hexserver.launcher.extension.ExtensionDownloader;
 import com.github.ynverxe.hexserver.launcher.extension.ServerDirectorySchemeCopier;
 import com.github.ynverxe.hexserver.launcher.library.LibraryDownloader;
 
+import com.github.ynverxe.hexserver.launcher.logger.EnvironmentLogger;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ public class HexServerLauncher {
   public static final String IGNORE_URL_FILES_ARGUMENT = "IgnoreUrlFiles";
 
   public static void main(String[] args) throws Exception {
+    EnvironmentLogger.logJvmInfo();
+
     String runDir = System.getProperty("hexserver.rundir", System.getProperty("user.dir"));
 
     Path runDirPath = Paths.get(runDir);

@@ -1,5 +1,6 @@
 package com.github.ynverxe.hexserver.launcher.library;
 
+import com.github.ynverxe.hexserver.launcher.logger.EnvironmentLogger;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
@@ -99,6 +100,8 @@ public class LibraryDownloader {
     this.classpathUrls.add(tempCoreJar.toURI().toURL()); // :core module overrides MinestomComponentLoggerProvider so the :core jar must be at start of classpath
 
     downloadDependencies();
+
+    EnvironmentLogger.logComponentsInfo(tempCoreJar.toPath());
   }
 
   public List<URL> urls() {
@@ -135,6 +138,8 @@ public class LibraryDownloader {
         .toList();
 
     repositories = system.newResolutionRepositories(session, repositories);
+
+    EnvironmentLogger.logMinestomCoordinates(minestomSource.coordinates());
 
     Artifact artifact = new DefaultArtifact(minestomSource.coordinates());
 
