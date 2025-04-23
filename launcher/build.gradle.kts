@@ -45,5 +45,7 @@ tasks.shadowJar {
 tasks.jar {
     manifest {
         attributes["Main-Class"] = "com.github.ynverxe.hexserver.launcher.HexServerLauncher"
+        attributes["Implementation-Title"] = "HexServer Launcher"
+        attributes["Implementation-Version"] = project.version
     }
 }

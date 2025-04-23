@@ -17,4 +17,9 @@ dependencies {
 
 tasks.shadowJar {
     archiveFileName = "core-all.jar"
+
+    manifest {
+        attributes["Implementation-Title"] = "HexServer Core"
+        attributes["Implementation-Version"] = project.version
+    }
 }
