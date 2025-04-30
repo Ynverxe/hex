@@ -20,7 +20,7 @@ public class ConfigureGeneratorSettingsTask extends DefaultTask {
 
     doFirst(task -> configureSystemProperties(project));
 
-    finalizedBy(":configureGeneratorSettings");
+    finalizedBy(":triggerGeneratorTask");
   }
 
   @Input
