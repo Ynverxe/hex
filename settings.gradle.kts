@@ -10,7 +10,6 @@ rootProject.name = "hex-server"
 
 include("core")
 include("world-manager")
-include("demo")
 
 includeBuild("../configurate-helper") {
     dependencySubstitution {
