@@ -37,6 +37,7 @@ tasks.named<Test>("test") {
 task<ShadowJar>("generateLauncher") {
     dependsOn(":core:shadowJar")
     configurations = project.configurations.runtimeClasspath.map { listOf(it) }
+    from(sourceSets.main.get().output)
 
     doFirst {
         val outputDir = System.getProperty("hex.generator.output.dir") ?: return@doFirst
