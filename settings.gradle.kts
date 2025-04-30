@@ -9,7 +9,6 @@ dependencyResolutionManagement {
 rootProject.name = "hex-server"
 
 include("core")
-include("world-manager")
 
 includeBuild("../configurate-helper") {
     dependencySubstitution {
@@ -24,9 +23,7 @@ includeBuild("../Minestom") {
             .using(project(":"))
     }
 }
-include("luckperms-as-extension")
 include("launcher")
-include("util")
 include("logging")
 include("launcher:generator")
 findProject(":launcher:generator")?.name = "generator"
