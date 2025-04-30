@@ -29,3 +29,5 @@ include("luckperms-as-extension")
 include("launcher")
 include("util")
 include("logging")
+include("launcher:generator")
+findProject(":launcher:generator")?.name = "generator"
