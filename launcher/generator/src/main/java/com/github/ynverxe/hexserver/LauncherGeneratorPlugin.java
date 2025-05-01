@@ -7,6 +7,6 @@ public class LauncherGeneratorPlugin implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {
-    project.getTasks().register("configureGeneratorSettings", ConfigureGeneratorSettingsTask.class);
+    project.getTasks().register("generateLauncher", GenerateLauncherTask.class);
   }
 }
