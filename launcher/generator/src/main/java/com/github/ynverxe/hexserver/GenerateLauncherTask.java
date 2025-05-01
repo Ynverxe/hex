@@ -10,9 +10,9 @@ import org.gradle.jvm.tasks.Jar;
 import java.io.File;
 import java.nio.file.Path;
 
-public class ConfigureGeneratorSettingsTask extends Jar {
+public class GenerateLauncherTask extends Jar {
 
-  public ConfigureGeneratorSettingsTask() {
+  public GenerateLauncherTask() {
     TaskReference launcherShadowJarTask = getProject().getGradle()
         .includedBuild("hex-server")
         .task(":launcher:shadowJar");
