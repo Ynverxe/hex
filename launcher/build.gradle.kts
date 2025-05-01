@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     id("java")
     id("com.gradleup.shadow") version "9.0.0-beta12"
@@ -34,45 +33,21 @@ tasks.named<Test>("test") {
     }
 }
 
-task<ShadowJar>("generateLauncher") {
+tasks.shadowJar {
     dependsOn(":core:shadowJar")
-    configurations = project.configurations.runtimeClasspath.map { listOf(it) }
-    from(sourceSets.main.get().output)
+    archiveFileName = "launcher-all.jar"
 
-    doFirst {
-        val outputDir = System.getProperty("hex.generator.output.dir") ?: return@doFirst
-        val extraResourcesDir = System.getProperty("hex.generator.input.extra") ?: return@doFirst
+    // Include core-all.jar inside launcher's fatJar
+    val coreFatJar = project.project(":core")
+        .tasks
+        .named<Jar>("shadowJar")
+        .get()
+        .archiveFile
+        .get()
 
-        val outputDirFile = File(outputDir)
-        println(outputDirFile)
-        if (!outputDirFile.exists()) {
-            assert(outputDirFile.mkdirs()) { "Cannot create $outputDir" }
-        }
+    from(coreFatJar)
 
-        val extraResourcesDirFile = File(extraResourcesDir)
-        println(extraResourcesDirFile)
-        assert(extraResourcesDirFile.exists()) { "$extraResourcesDir doesn't exists" }
-
-        val filename = System.getProperty("hex.generator.output.filename")
-        if (filename != null) {
-            archiveFileName.set(filename)
-        }
-
-        destinationDirectory.set(outputDirFile)
-
-        // Include core-all.jar inside launcher's fatJar
-        val coreFatJar = project.project(":core")
-            .tasks
-            .named<Jar>("shadowJar")
-            .get()
-            .archiveFile
-            .get()
-
-        from(coreFatJar)
-        from(extraResourcesDirFile)
-
-        mergeServiceFiles()
-    }
+    mergeServiceFiles()
 }
 
 tasks.jar {
