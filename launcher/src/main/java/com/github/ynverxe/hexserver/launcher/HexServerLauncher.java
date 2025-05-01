@@ -51,6 +51,8 @@ public class HexServerLauncher {
     processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     processBuilder.directory(new File(System.getProperty("user.dir")));
 
+    processBuilder.environment().put("parent-pid", String.valueOf(ProcessHandle.current().pid()));
+
     Process process = processBuilder.start();
     long pid = process.pid();
     LOGGER.info("HexServer started on pid {}", pid);

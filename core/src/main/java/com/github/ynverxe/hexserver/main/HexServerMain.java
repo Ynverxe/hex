@@ -1,6 +1,7 @@
 package com.github.ynverxe.hexserver.main;
 
 import com.github.ynverxe.hexserver.HexServerInitializer;
+import com.github.ynverxe.hexserver.internal.ParentProcessChecker;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,6 +17,10 @@ public class HexServerMain {
   public static final String DONT_REGISTER_DEFAULT_LISTENERS_ARGUMENT = "DontRegisterDefaultListeners";
 
   public static void main(String[] args) throws IOException, ClassNotFoundException {
+    if (System.getenv("parent-pid") != null) {
+      ParentProcessChecker.INSTANCE.start();
+    }
+
     String runDir = System.getProperty("hexserver.rundir", System.getProperty("user.dir"));
 
     Path runDirPath = Paths.get(runDir);
