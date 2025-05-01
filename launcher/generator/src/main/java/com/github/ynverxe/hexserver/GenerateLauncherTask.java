@@ -10,6 +10,11 @@ import org.gradle.jvm.tasks.Jar;
 import java.io.File;
 import java.nio.file.Path;
 
+/**
+ * Generates a fat jar for hex-server:launcher and copies it
+ * into the build dir of the applied project. This task includes
+ * the resource files on the source set "main" into the final jar.
+ */
 public class GenerateLauncherTask extends Jar {
 
   public GenerateLauncherTask() {
