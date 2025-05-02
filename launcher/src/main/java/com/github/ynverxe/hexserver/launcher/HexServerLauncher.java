@@ -30,11 +30,11 @@ public class HexServerLauncher {
 
     Path runDirPath = Paths.get(runDir);
 
-    LibraryDownloader libraryDownloader = new LibraryDownloader(runDirPath);
-
     // Copy server directory scheme
     new ServerDirectorySchemeCopier(runDirPath, isArgumentPresent(IGNORE_URL_FILES_ARGUMENT, args))
         .start();
+
+    LibraryDownloader libraryDownloader = new LibraryDownloader(runDirPath);
 
     // Download extensions
     ExtensionDownloader downloader = new ExtensionDownloader(runDirPath);
