@@ -25,5 +25,5 @@ includeBuild("../Minestom") {
 }
 include("launcher")
 include("logging")
-include("launcher:generator")
-findProject(":launcher:generator")?.name = "generator"
+include("launcher:plugin")
+findProject(":launcher:plugin")?.name = "plugin"
