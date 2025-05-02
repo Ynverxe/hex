@@ -134,7 +134,7 @@ public class ServerDirectorySchemeCopier {
   }
 
   private Path relativeToServerDir(@NotNull Path path) {
-    return this.serverDir.resolve(path);
+    return this.serverDir.resolve(path.toString());
   }
 
   private boolean canStart() {
