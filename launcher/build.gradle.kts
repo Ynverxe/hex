@@ -13,7 +13,8 @@ dependencies {
     implementation(libs.bundles.maven)
 
     // configuration files
-    implementation(libs.configurate.json)
+    implementation(libs.configurate.gson)
+    implementation(libs.configurate.hocon)
 
     // annotations
     compileOnly(libs.jetbrains.annotations)
