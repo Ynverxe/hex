@@ -12,10 +12,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.configurate.util.NamingSchemes;
-import org.spongepowered.configurate.yaml.NodeStyle;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -64,16 +63,15 @@ public final class HexServerInitializer {
         .fallbackContentRoot("")
         .destContentRoot(this.serverDir)
         .configurationLoaderFactory(
-            () -> YamlConfigurationLoader.builder()
-                .nodeStyle(NodeStyle.BLOCK)
-                .indent(2)
+            () -> HoconConfigurationLoader.builder()
+                .emitComments(true)
                 .defaultOptions(options -> options.serializers(builder -> builder.registerAnnotatedObjects(
                     ObjectMapper.factoryBuilder().defaultNamingScheme(NamingSchemes.LOWER_CASE_DASHED).build()
                 )))
         )
         .build();
 
-    this.serverConfiguration = this.configurationFactory.create("config.yml", "config.yml");
+    this.serverConfiguration = this.configurationFactory.create("config.conf", "config.conf");
     this.serverConfigurationValues = this.serverConfiguration.node().get(ServerConfiguration.class);
 
     this.process.scheduler().buildShutdownTask(this.extensionManager::shutdown);

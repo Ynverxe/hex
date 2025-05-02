@@ -25,7 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.BasicConfigurationNode;
+import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +45,7 @@ public class LibraryDownloader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LibraryDownloader.class);
 
-  private static final String MINESTOM_SOURCE_FILENAME = "minestom-source.json";
+  private static final String MINESTOM_SOURCE_FILENAME = "minestom-source.conf";
 
   private final Path serverDirPath;
   private final Path librariesDirPath;
@@ -111,8 +113,8 @@ public class LibraryDownloader {
   private void downloadDependencies() throws IOException, DependencyResolutionException {
     Path minestomSourcePath = this.serverDirPath.resolve(MINESTOM_SOURCE_FILENAME);
 
-    BasicConfigurationNode node;
-    GsonConfigurationLoader loader = GsonConfigurationLoader.builder()
+    ConfigurationNode node;
+    HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
         .file(minestomSourcePath.toFile())
         .build();
 
@@ -120,7 +122,7 @@ public class LibraryDownloader {
       InputStream stream = LibraryDownloader.class.getClassLoader().getResourceAsStream(MINESTOM_SOURCE_FILENAME);
 
       if (stream == null) {
-        throw new IllegalStateException("Cannot find minestom-source.json");
+        throw new IllegalStateException("Cannot find " + MINESTOM_SOURCE_FILENAME);
       }
 
       copy(stream, minestomSourcePath);

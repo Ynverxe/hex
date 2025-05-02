@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class ExtensionDownloader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionDownloader.class);
 
-  private static final String MANIFEST_FILENAME = "extensions_manifest.json";
+  private static final String MANIFEST_FILENAME = "extensions_manifest.conf";
 
   private final @NotNull Path serverRootDir;
   private final @NotNull Path extensionManifestPath;
@@ -136,7 +137,7 @@ public class ExtensionDownloader {
 
         ConfigurationNode extensionManifest = readExtensionManifest(file);
         if (!extension.equals(extensionManifest.node("name").getString())) {
-          throw new IllegalStateException("Declared extension '" + extension + "' in extensions_manifest.json doesn't match with the downloaded extension manifest name");
+          throw new IllegalStateException("Declared extension '" + extension + "' in " + MANIFEST_FILENAME + " doesn't match with the downloaded extension manifest name");
         }
       } catch (RuntimeException e) {
         file.close();
@@ -166,7 +167,7 @@ public class ExtensionDownloader {
   }
 
   private Map<String, URL> readManifest() throws IOException {
-    ConfigurationNode configurationNode = GsonConfigurationLoader.builder()
+    ConfigurationNode configurationNode = HoconConfigurationLoader.builder()
         .file(this.extensionManifestPath.toFile())
         .build().load();
 
