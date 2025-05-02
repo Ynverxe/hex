@@ -7,6 +7,7 @@ plugins {
 dependencies {
     compileOnly("com.gradleup.shadow:shadow-gradle-plugin:9.0.0-beta12")
     compileOnly(project(":launcher"))
+    implementation(libs.configurate.hocon)
 }
 
 repositories {
@@ -18,7 +19,7 @@ gradlePlugin {
     plugins {
         create("launcher-generator") {
             id = "launcher-generator"
-            implementationClass = "com.github.ynverxe.hexserver.LauncherGeneratorPlugin"
+            implementationClass = "com.github.ynverxe.hexserver.helper.HexHelperPlugin"
             description = "Generates a hex-server launcher with custom packaged resources"
         }
     }
