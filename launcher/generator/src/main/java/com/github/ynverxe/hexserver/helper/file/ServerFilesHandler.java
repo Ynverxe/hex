@@ -46,7 +46,6 @@ public class ServerFilesHandler {
     T builder = configuration.factory().get();
     configurator.execute(builder);
 
-    System.out.println(configuration.filePath());
     this.fallbackFileHandlers.add(new FallbackFileHandler(configuration.filePath(), builder.buildCopy()));
   }
 
