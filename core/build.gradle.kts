@@ -4,7 +4,8 @@ plugins {
 }
 
 dependencies {
-    api(libs.bundles.core.base)
+    api(libs.configurate.helper)
+    api(libs.configurate.hocon)
     api(libs.minestom.extensions)
     compileOnlyApi(libs.minestom)
 
