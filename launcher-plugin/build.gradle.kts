@@ -1,13 +1,12 @@
 plugins {
     `kotlin-dsl`
-    `hex-publishing-conventions`
+    `maven-publish`
     kotlin("jvm") version "2.1.0"
 }
 
 dependencies {
     compileOnly("com.gradleup.shadow:shadow-gradle-plugin:9.0.0-beta12")
-    compileOnly(project(":launcher"))
-    implementation(libs.configurate.hocon)
+    implementation("org.spongepowered:configurate-hocon:4.0.0")
 }
 
 repositories {
@@ -21,6 +20,16 @@ gradlePlugin {
             id = "launcher-helper"
             implementationClass = "com.github.ynverxe.hexserver.helper.HexHelperPlugin"
             description = "Generates util tasks to generate and run a launcher"
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            version = project.version.toString()
+            groupId = project.group.toString()
+            artifactId = project.name
         }
     }
 }
