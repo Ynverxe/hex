@@ -6,8 +6,6 @@ import org.gradle.api.Task;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
-import org.gradle.api.initialization.IncludedBuild;
-import org.gradle.api.tasks.TaskReference;
 import org.gradle.jvm.tasks.Jar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +24,9 @@ import java.util.concurrent.Callable;
 public class GenerateLauncherTask extends Jar {
 
   private @Nullable ServerFilesHandler serverFilesHandler;
+  private Object jarTask;
+
+  private @Nullable FileTree fatJarFiles;
 
   public GenerateLauncherTask() {
     setGroup("build");
@@ -33,29 +34,13 @@ public class GenerateLauncherTask extends Jar {
     getArchiveFileName().convention(getProject().getName() + "-launcher.jar");
     setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
 
-    TaskReference launcherShadowJarTask = getProject().getGradle()
-        .includedBuild("hex-server")
-        .task(":launcher:shadowJar");
-    dependsOn(launcherShadowJarTask);
-
     Task processResourcesTask = getProject().getTasks().getByName("processResources");
     dependsOn(processResourcesTask);
 
-    IncludedBuild hexServerBuild = getProject().getGradle()
-        .includedBuild("hex-server");
-
-    Path launcherBuildDir = hexServerBuild.getProjectDir().toPath()
-        .resolve("launcher")
-        .resolve("build")
-        .resolve("libs");
-
-    Path launcherJar = launcherBuildDir.resolve("launcher-all.jar");
-
-    // lazy file tree
-    FileTree files = getProject().zipTree(launcherJar);
+    Callable<FileTree> lazyFileTree = this::resolveFatJarFiles;
 
     // add launcher-all.jar
-    from(files);
+    from(lazyFileTree);
 
     // add resources from the current project
     from(processResourcesTask);
@@ -69,21 +54,54 @@ public class GenerateLauncherTask extends Jar {
     }));
 
     // Merge manifests
-    manifest(manifest -> {
-      FileCollection foundManifests = files.filter(file -> file.getName().equals("MANIFEST.MF"));
-      manifest.from((Callable<File>) foundManifests::getSingleFile);
-    });
+    manifest(manifest -> manifest.from((Callable<?>) () -> {
+      FileTree files = resolveFatJarFiles();
+      return files.filter(file -> file.getName().equals("MANIFEST.MF"))
+          .getSingleFile();
+    }));
 
     // Jar task excludes META-INF from external jars into final copies
     metaInf(copySpec -> {
-      FileCollection metaInfFiles =
-          files.filter(file -> file.getAbsolutePath().contains("META-INF") && !file.getName().equals("MANIFEST.MF"));
+      copySpec.from((Callable<?>) () -> {
+        FileTree files = resolveFatJarFiles();
 
-      copySpec.from(metaInfFiles);
+        return files.filter(file -> file.getAbsolutePath().contains("META-INF") && !file.getName().equals("MANIFEST.MF"));
+      });
     });
+
+    dependsOn((Callable<?>) () -> {
+      if (this.jarTask != null) return this.jarTask;
+
+      return getProject().getGradle()
+          .includedBuild("hex-server")
+          .task(":launcher:shadowJar");
+    });
+  }
+
+  private FileTree resolveFatJarFiles() {
+    if (this.fatJarFiles != null) return this.fatJarFiles;
+
+    Path pathToLauncher;
+
+    if (this.jarTask == null) {
+      pathToLauncher = getProject().getGradle().includedBuild("hex-server").getProjectDir().toPath()
+          .resolve("launcher")
+          .resolve("build")
+          .resolve("libs")
+          .resolve("launcher-all.jar");
+    } else {
+      pathToLauncher = ((Jar) this.jarTask).getArchiveFile().get().getAsFile().toPath();
+    }
+
+    // lazy file tree
+    return this.fatJarFiles = getProject().zipTree(pathToLauncher);
   }
 
   public void serverFiles(@NotNull Action<ServerFilesHandler> action) {
     action.execute(this.serverFilesHandler = new ServerFilesHandler());
+  }
+
+  public void setJarTask(@Nullable Object shadowJarTask) {
+    this.jarTask = shadowJarTask;
   }
 }
