@@ -4,15 +4,22 @@ import com.github.ynverxe.configuratehelper.handler.FastConfiguration;
 import com.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
 import com.github.ynverxe.hexserver.internal.configuration.ServerConfiguration;
 import com.github.ynverxe.hexserver.world.ExtensionWorldLookup;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minestom.server.ServerProcess;
 import net.minestom.server.extensions.ExtensionManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public final class HexServer {
+
+  private static final ComponentLogger LOGGER = ComponentLogger.logger();
 
   static volatile HexServer INSTANCE;
 
@@ -26,6 +33,7 @@ public final class HexServer {
   private final ExtensionWorldLookup extensionWorldLookup;
 
   private final ExtensionManager extensions;
+  private final List<Consumer<HexServer>> shutdownListeners = new ArrayList<>();
 
   HexServer(Path serverDir, URLConfigurationFactory configurationFactory, FastConfiguration serverConfiguration, ServerConfiguration serverConfigurationValues, ExtensionManager extensions, ServerProcess process) throws IOException {
     this.serverDir = serverDir;
@@ -35,6 +43,9 @@ public final class HexServer {
     this.process = process;
     this.extensions = extensions;
     this.extensionWorldLookup = new ExtensionWorldLookup(this);
+
+    this.process.scheduler().buildShutdownTask(this::handleShutdown);
+    this.addShutdownListener(hexServer -> this.extensions.shutdown());
   }
 
   public ServerProcess process() {
@@ -61,11 +72,37 @@ public final class HexServer {
     return serverConfigurationValues;
   }
 
+  public void shutdown() {
+    this.process.stop();
+  }
+
   public ExtensionManager extensions() {
     return extensions;
   }
 
+  public void addShutdownListener(@NotNull Consumer<HexServer> listener) {
+    this.shutdownListeners.add(Objects.requireNonNull(listener));
+  }
+
+  private void handleShutdown() {
+    synchronized (HexServer.class) {
+      for (Consumer<HexServer> shutdownListener : this.shutdownListeners) {
+        try {
+          shutdownListener.accept(this);
+        } catch (Exception error) {
+          LOGGER.error("Shutdown listener generated an unexpected error", error);
+        }
+      }
+
+      HexServer.INSTANCE = null;
+    }
+  }
+
   public static @NotNull HexServer instance() {
     return Objects.requireNonNull(INSTANCE, "HexServer#INSTANCE wasn't initialized yet. Initialize a server using HexServerInitializer");
+  }
+
+  public static @NotNull Optional<HexServer> optionalInstance() {
+    return Optional.ofNullable(INSTANCE);
   }
 }
