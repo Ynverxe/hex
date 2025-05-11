@@ -2,9 +2,9 @@ package com.github.ynverxe.hexserver.helper;
 
 import com.github.ynverxe.hexserver.helper.file.ServerFilesHandler;
 import org.gradle.api.Action;
+import org.gradle.api.Incubating;
 import org.gradle.api.Task;
 import org.gradle.api.file.DuplicatesStrategy;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
 import org.gradle.jvm.tasks.Jar;
 import org.jetbrains.annotations.NotNull;
@@ -21,10 +21,11 @@ import java.util.concurrent.Callable;
  * into the build dir of the applied project. This task includes
  * the resource files on the source set "main" into the final jar.
  */
+@Incubating
 public class GenerateLauncherTask extends Jar {
 
   private @Nullable ServerFilesHandler serverFilesHandler;
-  private Object jarTask;
+  private @Nullable Jar jarTask;
 
   private @Nullable FileTree fatJarFiles;
 
@@ -90,7 +91,7 @@ public class GenerateLauncherTask extends Jar {
           .resolve("libs")
           .resolve("launcher-all.jar");
     } else {
-      pathToLauncher = ((Jar) this.jarTask).getArchiveFile().get().getAsFile().toPath();
+      pathToLauncher = this.jarTask.getArchiveFile().get().getAsFile().toPath();
     }
 
     // lazy file tree
@@ -101,7 +102,11 @@ public class GenerateLauncherTask extends Jar {
     action.execute(this.serverFilesHandler = new ServerFilesHandler());
   }
 
-  public void setJarTask(@Nullable Object shadowJarTask) {
-    this.jarTask = shadowJarTask;
+  public void overrideJarTask(@Nullable Jar jarTask) {
+    this.jarTask = jarTask;
+  }
+
+  public void overrideJarTask(@NotNull String path) {
+    overrideJarTask((Jar) getProject().getTasks().getByPath(path));
   }
 }
