@@ -15,6 +15,13 @@ public class ServerConfiguration {
   public ServerConfiguration() {
   }
 
+  public ServerConfiguration(@MonotonicNonNull String ip, @Nullable String spawnWorld, int port, @MonotonicNonNull String brandName) {
+    this.ip = ip;
+    this.spawnWorld = spawnWorld;
+    this.port = port;
+    this.brandName = brandName;
+  }
+
   public @MonotonicNonNull String ip() {
     return ip;
   }
