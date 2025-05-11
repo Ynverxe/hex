@@ -27,6 +27,8 @@ public class RunHexServerTask extends JavaExec {
   private @Nullable Jar serverJarProviderTask;
   private final RegularFileProperty serverJarFile;
 
+  private final List<Jar> extensionTasks = new ArrayList<>();
+
   public RunHexServerTask() {
     Project project = getProject();
 
@@ -36,6 +38,11 @@ public class RunHexServerTask extends JavaExec {
   @TaskAction
   @Override
   public void exec() {
+    for (Jar extensionTask : this.extensionTasks) {
+      File file = extensionTask.getArchiveFile().get().getAsFile();
+      args("-add-extension=" + "\"" + file.getAbsolutePath() + "\"");
+    }
+
     File jarFile = this.resolveServerJarFile();
 
     if (!jarFile.getName().endsWith(".jar")) {
@@ -58,6 +65,13 @@ public class RunHexServerTask extends JavaExec {
   @Internal
   public RegularFileProperty getServerJarFile() {
     return serverJarFile;
+  }
+
+  public void addExtensionFromTask(@NotNull Object task) {
+    Task resolved = TaskUtil.resolveTask(this.getProject(), task);
+
+    this.extensionTasks.add(TaskUtil.checkIsInstance(resolved, Jar.class));
+    dependsOn(resolved);
   }
 
   public void serverJarProviderTask(@NotNull Object task) {
