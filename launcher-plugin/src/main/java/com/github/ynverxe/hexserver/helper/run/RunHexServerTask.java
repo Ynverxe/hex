@@ -1,14 +1,13 @@
 package com.github.ynverxe.hexserver.helper.run;
 
+import com.github.ynverxe.hexserver.helper.util.TaskUtil;
+import org.gradle.api.Incubating;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.internal.tasks.TaskDependencyResolveContext;
-import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
-import org.gradle.composite.internal.IncludedBuildTaskReference;
 import org.gradle.jvm.tasks.Jar;
 import org.gradle.work.DisableCachingByDefault;
 import org.jetbrains.annotations.NotNull;
@@ -17,24 +16,33 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+@Incubating
 @DisableCachingByDefault
 public class RunHexServerTask extends JavaExec {
 
-  private final Property<Object> serverJarProviderTask;
+  private @Nullable Jar serverJarProviderTask;
   private final RegularFileProperty serverJarFile;
+
+  private final List<Jar> extensionTasks = new ArrayList<>();
 
   public RunHexServerTask() {
     Project project = getProject();
 
     this.serverJarFile = project.getObjects().fileProperty();
-    this.serverJarProviderTask = project.getObjects().property(Object.class);
   }
 
   @TaskAction
   @Override
   public void exec() {
+    for (Jar extensionTask : this.extensionTasks) {
+      File file = extensionTask.getArchiveFile().get().getAsFile();
+      args("-add-extension=" + "\"" + file.getAbsolutePath() + "\"");
+    }
+
     File jarFile = this.resolveServerJarFile();
 
     if (!jarFile.getName().endsWith(".jar")) {
@@ -59,15 +67,20 @@ public class RunHexServerTask extends JavaExec {
     return serverJarFile;
   }
 
+  public void addExtensionFromTask(@NotNull Object task) {
+    Task resolved = TaskUtil.resolveTask(this.getProject(), task);
+
+    this.extensionTasks.add(TaskUtil.checkIsInstance(resolved, Jar.class));
+    dependsOn(resolved);
+  }
+
   public void serverJarProviderTask(@NotNull Object task) {
     Objects.requireNonNull(task);
 
-    if (task instanceof String || task instanceof Task || task instanceof IncludedBuildTaskReference) {
-      dependsOn(task);
-      this.serverJarProviderTask.set(task);
-    } else {
-      throw new IllegalArgumentException("Invalid type '" + task.getClass() + "'");
-    }
+    Task resolved = TaskUtil.resolveTask(this.getProject(), task);
+
+    dependsOn(resolved);
+    this.serverJarProviderTask = TaskUtil.checkIsInstance(resolved, Jar.class);
   }
 
   public void serverJarFile(@NotNull Object jarFile) {
@@ -83,56 +96,13 @@ public class RunHexServerTask extends JavaExec {
   }
 
   private File resolveServerJarFile() {
-    if (this.serverJarProviderTask.isPresent()) {
-      Object task = this.serverJarProviderTask.get();
-
-      TaskContainer tasks = getProject().getTasks();
-      Task realTask = switch (task) {
-        case String s -> tasks.getByPath(s);
-        case Task task1 -> task1;
-        case TaskReference ignored -> {
-          if (task instanceof IncludedBuildTaskReference taskReference) {
-            TaskCatcher catcher = new TaskCatcher();
-            taskReference.visitDependencies(catcher);
-
-            yield catcher.task;
-          } else {
-            yield tasks.getByName(((TaskReference) task).getName());
-          }
-        }
-        default -> throw new RuntimeException("Cannot resolve task");
-      };
-
-      if (!(realTask instanceof Jar jarTask)) {
-        throw new IllegalArgumentException("Task '" + realTask.getPath() + "' isn't an instance of org.gradle.jvms.tasks.Jar");
-      }
-
-      return jarTask.getArchiveFile().get().getAsFile();
+    if (this.serverJarProviderTask != null) {
+      Jar task = this.serverJarProviderTask;
+      return task.getArchiveFile().get().getAsFile();
     } else if (this.serverJarFile.isPresent()) {
       return this.serverJarFile.getAsFile().get();
     } else {
       throw new IllegalStateException("No source for server jar provided");
     }
   }
-
-  private static class TaskCatcher implements TaskDependencyResolveContext {
-
-    private Task task;
-
-    @Override
-    public void add(Object dependency) {
-      this.task = (Task) dependency;
-    }
-
-    @Override
-    public void visitFailure(Throwable failure) {
-
-    }
-
-    @Override
-    public @Nullable Task getTask() {
-      return null;
-    }
-  }
-
 }
