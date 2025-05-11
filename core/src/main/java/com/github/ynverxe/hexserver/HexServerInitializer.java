@@ -113,7 +113,7 @@ public final class HexServerInitializer {
         DefaultListenersRegister.register(this.process.eventHandler(), server);
       }
 
-      ServerTerminal.INSTANCE.start();
+      ServerTerminal.init();
 
       return server;
     }
