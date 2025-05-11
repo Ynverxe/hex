@@ -6,6 +6,10 @@ dependencyResolutionManagement {
     }
 }
 
+pluginManagement {
+    includeBuild("launcher-plugin")
+}
+
 rootProject.name = "hex-server"
 
 include("core")
@@ -25,5 +29,3 @@ includeBuild("../Minestom") {
 }
 include("launcher")
 include("logging")
-include("launcher:plugin")
-findProject(":launcher:plugin")?.name = "plugin"

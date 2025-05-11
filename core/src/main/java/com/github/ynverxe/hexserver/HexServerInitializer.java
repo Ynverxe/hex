@@ -8,6 +8,7 @@ import com.github.ynverxe.hexserver.terminal.ServerTerminal;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.ServerProcess;
 import net.minestom.server.extensions.ExtensionManager;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import java.net.SocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public final class HexServerInitializer {
+public class HexServerInitializer {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HexServerInitializer.class);
 
@@ -39,6 +40,30 @@ public final class HexServerInitializer {
   // I make my own ExtensionManager, because I don't like that ExtensionBootstrap starts the extensions on #init
   // That causes Extensions being loaded and expecting that HexServer#INSTANCE was initialized
   private final ExtensionManager extensionManager;
+
+  /**
+   * Constructor reserved for testing purposes.
+   *
+   * @param serverDir The directory where the server will run
+   * @param configurationFactory The configuration factory used to load server files
+   * @param serverConfiguration The server configuration
+   * @param serverConfigurationValues The server configuration values
+   * @param server The server
+   * @param process The server process
+   * @param registerDefaultListeners If true, default listeners will be registered
+   * @param extensionManager The extension manager
+   */
+  @ApiStatus.Internal
+  protected HexServerInitializer(Path serverDir, URLConfigurationFactory configurationFactory, FastConfiguration serverConfiguration, ServerConfiguration serverConfigurationValues, MinecraftServer server, ServerProcess process, boolean registerDefaultListeners, ExtensionManager extensionManager) {
+    this.serverDir = serverDir;
+    this.configurationFactory = configurationFactory;
+    this.serverConfiguration = serverConfiguration;
+    this.serverConfigurationValues = serverConfigurationValues;
+    this.server = server;
+    this.process = process;
+    this.registerDefaultListeners = registerDefaultListeners;
+    this.extensionManager = extensionManager;
+  }
 
   public HexServerInitializer(@NotNull Path serverDir) throws IOException {
     this.serverDir = serverDir;
@@ -73,8 +98,6 @@ public final class HexServerInitializer {
 
     this.serverConfiguration = this.configurationFactory.create("config.conf", "config.conf");
     this.serverConfigurationValues = this.serverConfiguration.node().get(ServerConfiguration.class);
-
-    this.process.scheduler().buildShutdownTask(this.extensionManager::shutdown);
   }
 
   @Contract("-> this")
@@ -113,7 +136,7 @@ public final class HexServerInitializer {
         DefaultListenersRegister.register(this.process.eventHandler(), server);
       }
 
-      ServerTerminal.INSTANCE.start();
+      ServerTerminal.init();
 
       return server;
     }
