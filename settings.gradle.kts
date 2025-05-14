@@ -29,3 +29,4 @@ includeBuild("../Minestom") {
 }
 include("launcher")
 include("logging")
+include("demo-extension")
