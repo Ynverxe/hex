@@ -11,10 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class HexServer {
@@ -36,16 +33,23 @@ public final class HexServer {
   private final List<Consumer<HexServer>> shutdownListeners = new ArrayList<>();
 
   HexServer(Path serverDir, URLConfigurationFactory configurationFactory, FastConfiguration serverConfiguration, ServerConfiguration serverConfigurationValues, ExtensionManager extensions, ServerProcess process) throws IOException {
+  private final List<String> startArguments;
+
     this.serverDir = serverDir;
     this.configurationFactory = configurationFactory;
     this.serverConfiguration = serverConfiguration;
     this.serverConfigurationValues = serverConfigurationValues;
     this.process = process;
     this.extensions = extensions;
+    this.startArguments = startArguments;
     this.extensionWorldLookup = new ExtensionWorldLookup(this);
 
     this.process.scheduler().buildShutdownTask(this::handleShutdown);
     this.addShutdownListener(hexServer -> this.extensions.shutdown());
+  }
+
+  public List<String> startArguments() {
+    return startArguments;
   }
 
   public ServerProcess process() {
