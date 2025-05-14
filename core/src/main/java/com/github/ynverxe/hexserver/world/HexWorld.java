@@ -1,5 +1,6 @@
 package com.github.ynverxe.hexserver.world;
 
+import com.github.ynverxe.hexserver.HexServer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
@@ -92,6 +93,10 @@ public class HexWorld extends InstanceContainer implements Keyed, Examinable {
     }
 
     return component;
+  }
+
+  public void clearPlayers() {
+    this.getPlayers().forEach(player -> player.setInstance(HexServer.instance().fallbackWorld()));
   }
 
   private void initProperties() {

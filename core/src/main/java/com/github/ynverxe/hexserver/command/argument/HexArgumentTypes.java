@@ -1,6 +1,7 @@
 package com.github.ynverxe.hexserver.command.argument;
 
 import com.github.ynverxe.hexserver.HexServer;
+import com.github.ynverxe.hexserver.extension.HexExtension;
 import com.github.ynverxe.hexserver.world.HexWorld;
 import com.github.ynverxe.hexserver.world.HexWorldLookup;
 import net.kyori.adventure.key.Key;
@@ -12,6 +13,17 @@ import org.jetbrains.annotations.NotNull;
 public final class HexArgumentTypes {
 
   private HexArgumentTypes() {
+  }
+
+  public static @NotNull Argument<HexExtension> extensionArgument(@NotNull String id) {
+    Argument<HexExtension> argument = ArgumentType.Word(id)
+        .map(new ExtensionArgumentMapper());
+
+    argument.setSuggestionCallback((sender, context, suggestion) -> {
+      HexServer.instance().extensions().extensions().forEach(extension -> suggestion.addEntry(new SuggestionEntry(extension.name())));
+    });
+
+    return argument;
   }
 
   public static @NotNull Argument<HexWorld> worldArgument(@NotNull String id, @NotNull HexWorldLookup worldLookup) {
