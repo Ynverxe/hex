@@ -2,11 +2,13 @@ package com.github.ynverxe.hexserver;
 
 import com.github.ynverxe.configuratehelper.handler.FastConfiguration;
 import com.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
+import com.github.ynverxe.hexserver.extension.HexExtensionManager;
 import com.github.ynverxe.hexserver.internal.configuration.ServerConfiguration;
 import com.github.ynverxe.hexserver.world.ExtensionWorldLookup;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minestom.server.ServerProcess;
-import net.minestom.server.extensions.ExtensionManager;
+import net.minestom.server.instance.InstanceContainer;
+import net.minestom.server.world.DimensionType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -29,23 +31,25 @@ public final class HexServer {
 
   private final ExtensionWorldLookup extensionWorldLookup;
 
-  private final ExtensionManager extensions;
+  private final HexExtensionManager.Holder extensionManagerHolder;
   private final List<Consumer<HexServer>> shutdownListeners = new ArrayList<>();
 
-  HexServer(Path serverDir, URLConfigurationFactory configurationFactory, FastConfiguration serverConfiguration, ServerConfiguration serverConfigurationValues, ExtensionManager extensions, ServerProcess process) throws IOException {
   private final List<String> startArguments;
 
+  private final @NotNull InstanceContainer fallbackWorld = new InstanceContainer(UUID.randomUUID(), DimensionType.OVERWORLD);
+
+  HexServer(Path serverDir, URLConfigurationFactory configurationFactory, FastConfiguration serverConfiguration, ServerConfiguration serverConfigurationValues, HexExtensionManager.Holder extensionManagerHolder, ServerProcess process, List<String> startArguments) throws IOException {
     this.serverDir = serverDir;
     this.configurationFactory = configurationFactory;
     this.serverConfiguration = serverConfiguration;
     this.serverConfigurationValues = serverConfigurationValues;
     this.process = process;
-    this.extensions = extensions;
+    this.extensionManagerHolder = extensionManagerHolder;
     this.startArguments = startArguments;
     this.extensionWorldLookup = new ExtensionWorldLookup(this);
 
     this.process.scheduler().buildShutdownTask(this::handleShutdown);
-    this.addShutdownListener(hexServer -> this.extensions.shutdown());
+    this.addShutdownListener(hexServer -> this.extensionManagerHolder.shutdownCaller().run());
   }
 
   public List<String> startArguments() {
@@ -80,8 +84,8 @@ public final class HexServer {
     this.process.stop();
   }
 
-  public ExtensionManager extensions() {
-    return extensions;
+  public HexExtensionManager extensions() {
+    return extensionManagerHolder.extensionManager();
   }
 
   public void addShutdownListener(@NotNull Consumer<HexServer> listener) {
@@ -100,6 +104,10 @@ public final class HexServer {
 
       HexServer.INSTANCE = null;
     }
+  }
+
+  public @NotNull InstanceContainer fallbackWorld() {
+    return fallbackWorld;
   }
 
   public static @NotNull HexServer instance() {
