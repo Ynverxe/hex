@@ -1,15 +1,14 @@
 package com.github.ynverxe.hexserver.world;
 
+import com.github.ynverxe.hexserver.extension.HexExtensionManager;
 import com.github.ynverxe.hexserver.HexServer;
-import com.github.ynverxe.hexserver.extension.HexExtension;
-import net.minestom.server.extensions.ExtensionManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
 public class ExtensionWorldLookup implements HexWorldLookup {
 
-  private final ExtensionManager extensionManager;
+  private final HexExtensionManager extensionManager;
 
   public ExtensionWorldLookup(@NotNull HexServer hexServer) {
     this.extensionManager = hexServer.extensions();
@@ -17,9 +16,8 @@ public class ExtensionWorldLookup implements HexWorldLookup {
 
   @Override
   public @NotNull Stream<HexWorld> internalView() {
-    return extensionManager.getExtensions()
+    return extensionManager.extensions()
         .stream()
-        .filter(extension -> extension instanceof HexExtension)
-        .flatMap(extension -> ((HexExtension) extension).worldManager().internalView());
+        .flatMap(extension -> extension.worldManager().internalView());
   }
 }

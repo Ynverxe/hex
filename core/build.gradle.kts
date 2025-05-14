@@ -6,14 +6,10 @@ plugins {
 dependencies {
     api(libs.configurate.helper)
     api(libs.configurate.hocon)
-    api(libs.minestom.extensions)
     compileOnlyApi(libs.minestom)
 
     // logging
     implementation(project(":logging"))
-
-    runtimeOnly(kotlin("stdlib", "1.5.0"))
-    runtimeOnly("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-depchain:3.1.4")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -47,4 +43,27 @@ tasks.named<Test>("test") {
     testLogging {
         events("passed")
     }
+
+    val demoExtensionJarTask = rootProject.project(":demo-extension").tasks.named<Jar>("jar")
+    dependsOn(demoExtensionJarTask)
+
+    val demoExtensionJar = demoExtensionJarTask
+        .get()
+        .archiveFile
+        .get()
+        .asFile
+        .absolutePath
+
+    val demoExtensionDependencyJarTask = rootProject.project(":demo-extension").tasks.named<Jar>("makeDependencyJar")
+    dependsOn(demoExtensionDependencyJarTask)
+
+    val demoDependencyExtensionJar = demoExtensionDependencyJarTask
+        .get()
+        .archiveFile
+        .get()
+        .asFile
+        .absolutePath
+
+    val arguments = "-add-extension=\"${demoExtensionJar}\" -add-extension=\"${demoDependencyExtensionJar}\""
+    jvmArgs("-Dserver-arguments=$arguments")
 }
