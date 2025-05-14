@@ -106,7 +106,11 @@ public class HexServerInitializer {
     return this;
   }
 
-  public @NotNull HexServer start() throws IOException, ClassNotFoundException {
+  public void startArguments(@NotNull List<String> startArguments) {
+    this.startArguments = Objects.requireNonNull(startArguments);
+  }
+
+  public @NotNull HexServer start() throws Throwable {
     return start(this.serverConfigurationValues.ip(), this.serverConfigurationValues.port());
   }
 
@@ -121,6 +125,8 @@ public class HexServerInitializer {
       }
 
       HexServer server = new HexServer(this.serverDir, this.configurationFactory, this.serverConfiguration, this.serverConfigurationValues, this.extensionManager, this.process);
+      HexServer server = new HexServer(this.serverDir, this.configurationFactory, this.serverConfiguration, this.serverConfigurationValues, this.extensionManager, this.process, Collections.unmodifiableList(this.startArguments));
+
       MinecraftServer.setBrandName(this.serverConfigurationValues.brandName());
       HexServer.INSTANCE = server;
 

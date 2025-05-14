@@ -22,7 +22,6 @@ public class HexServerMain {
 
   public static final String DONT_REGISTER_DEFAULT_LISTENERS_ARGUMENT = "DontRegisterDefaultListeners";
   private static volatile boolean STARTED = false;
-  private static @Nullable List<String> ARGUMENTS;
 
   public static void main(String[] args) throws IOException, ClassNotFoundException {
     synchronized (HexServerMain.class) {
@@ -30,7 +29,6 @@ public class HexServerMain {
         throw new IllegalArgumentException("main(String[]) was already been called");
       }
 
-      ARGUMENTS = Arrays.asList(args);
       STARTED = true;
 
       if (System.getenv("parent-pid") != null) {
@@ -46,6 +44,8 @@ public class HexServerMain {
       if (!isArgumentPresent(DONT_REGISTER_DEFAULT_LISTENERS_ARGUMENT, args)) {
         initializer.registerDefaultListeners();
       }
+
+      initializer.startArguments(List.of(args));
 
       initializer.start();
     }
