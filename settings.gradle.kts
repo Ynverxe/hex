@@ -6,11 +6,13 @@ dependencyResolutionManagement {
     }
 }
 
+pluginManagement {
+    includeBuild("launcher-plugin")
+}
+
 rootProject.name = "hex-server"
 
 include("core")
-include("world-manager")
-include("demo")
 
 includeBuild("../configurate-helper") {
     dependencySubstitution {
@@ -25,6 +27,6 @@ includeBuild("../Minestom") {
             .using(project(":"))
     }
 }
-include("luckperms-as-extension")
 include("launcher")
-include("util")
+include("logging")
+include("demo-extension")

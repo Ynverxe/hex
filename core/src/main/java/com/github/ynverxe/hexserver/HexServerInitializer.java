@@ -2,28 +2,32 @@ package com.github.ynverxe.hexserver;
 
 import com.github.ynverxe.configuratehelper.handler.FastConfiguration;
 import com.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
+import com.github.ynverxe.hexserver.extension.HexExtensionManager;
+import com.github.ynverxe.hexserver.extension.internal.JarExtensionCollector;
 import com.github.ynverxe.hexserver.internal.configuration.ServerConfiguration;
 import com.github.ynverxe.hexserver.internal.listener.DefaultListenersRegister;
 import com.github.ynverxe.hexserver.terminal.ServerTerminal;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.ServerProcess;
-import net.minestom.server.extensions.ExtensionManager;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.configurate.util.NamingSchemes;
-import org.spongepowered.configurate.yaml.NodeStyle;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
-public final class HexServerInitializer {
+public class HexServerInitializer {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HexServerInitializer.class);
 
@@ -37,19 +41,42 @@ public final class HexServerInitializer {
 
   private boolean registerDefaultListeners;
 
-  // I make my own ExtensionManager, because I don't like that ExtensionBootstrap starts the extensions on #init
-  // That causes Extensions being loaded and expecting that HexServer#INSTANCE was initialized
-  private final ExtensionManager extensionManager;
+  private final HexExtensionManager.Holder extensionManagerHolder;
+
+  private @NotNull List<String> startArguments = Collections.emptyList();
+
+  /**
+   * Constructor reserved for testing purposes.
+   *
+   * @param serverDir The directory where the server will run
+   * @param configurationFactory The configuration factory used to load server files
+   * @param serverConfiguration The server configuration
+   * @param serverConfigurationValues The server configuration values
+   * @param server The server
+   * @param process The server process
+   * @param registerDefaultListeners If true, default listeners will be registered
+   * @param extensionManagerHolder The extension manager
+   */
+  @ApiStatus.Internal
+  protected HexServerInitializer(Path serverDir, URLConfigurationFactory configurationFactory, FastConfiguration serverConfiguration, ServerConfiguration serverConfigurationValues, MinecraftServer server, ServerProcess process, boolean registerDefaultListeners, HexExtensionManager.Holder extensionManagerHolder) {
+    this.serverDir = serverDir;
+    this.configurationFactory = configurationFactory;
+    this.serverConfiguration = serverConfiguration;
+    this.serverConfigurationValues = serverConfigurationValues;
+    this.server = server;
+    this.process = process;
+    this.registerDefaultListeners = registerDefaultListeners;
+    this.extensionManagerHolder = extensionManagerHolder;
+  }
 
   public HexServerInitializer(@NotNull Path serverDir) throws IOException {
     this.serverDir = serverDir;
 
-    Path extensionsDir = this.serverDir.resolve("extensions");
-    System.setProperty("minestom.extension.folder", extensionsDir.toString());
-
     this.server = MinecraftServer.init();
     this.process = MinecraftServer.process();
-    this.extensionManager = new ExtensionManager(this.process);
+
+    Path extensionsFolder = serverDir.resolve("extensions");
+    this.extensionManagerHolder = HexExtensionManager.create(extensionsFolder, new JarExtensionCollector(extensionsFolder));
 
     if (!Files.exists(serverDir)) {
       try {
@@ -64,19 +91,16 @@ public final class HexServerInitializer {
         .fallbackContentRoot("")
         .destContentRoot(this.serverDir)
         .configurationLoaderFactory(
-            () -> YamlConfigurationLoader.builder()
-                .nodeStyle(NodeStyle.BLOCK)
-                .indent(2)
+            () -> HoconConfigurationLoader.builder()
+                .emitComments(true)
                 .defaultOptions(options -> options.serializers(builder -> builder.registerAnnotatedObjects(
                     ObjectMapper.factoryBuilder().defaultNamingScheme(NamingSchemes.LOWER_CASE_DASHED).build()
                 )))
         )
         .build();
 
-    this.serverConfiguration = this.configurationFactory.create("config.yml", "config.yml");
+    this.serverConfiguration = this.configurationFactory.create("config.conf", "config.conf");
     this.serverConfigurationValues = this.serverConfiguration.node().get(ServerConfiguration.class);
-
-    this.process.scheduler().buildShutdownTask(this.extensionManager::shutdown);
   }
 
   @Contract("-> this")
@@ -85,37 +109,46 @@ public final class HexServerInitializer {
     return this;
   }
 
-  public @NotNull HexServer start() throws IOException, ClassNotFoundException {
+  public void startArguments(@NotNull List<String> startArguments) {
+    this.startArguments = Objects.requireNonNull(startArguments);
+  }
+
+  public @NotNull HexServer start() throws Throwable {
     return start(this.serverConfigurationValues.ip(), this.serverConfigurationValues.port());
   }
 
-  public @NotNull HexServer start(@NotNull String ip, int port) throws IOException, ClassNotFoundException {
+  public @NotNull HexServer start(@NotNull String ip, int port) throws Throwable {
     return this.start(new InetSocketAddress(ip, port));
   }
 
-  public @NotNull HexServer start(@NotNull SocketAddress socketAddress) throws IOException, ClassNotFoundException {
+  public @NotNull HexServer start(@NotNull SocketAddress socketAddress) throws Throwable {
     synchronized (HexServerInitializer.class) {
       if (HexServer.INSTANCE != null) {
         throw new IllegalStateException("There's already a server running on this process. Stop that server to start a new one.");
       }
 
-      HexServer server = new HexServer(this.serverDir, this.configurationFactory, this.serverConfiguration, this.serverConfigurationValues, this.extensionManager, this.process);
+      HexServer server = new HexServer(
+          this.serverDir,
+          this.configurationFactory,
+          this.serverConfiguration,
+          this.serverConfigurationValues,
+          this.extensionManagerHolder,
+          this.process,
+          Collections.unmodifiableList(this.startArguments)
+      );
+
       MinecraftServer.setBrandName(this.serverConfigurationValues.brandName());
       HexServer.INSTANCE = server;
 
       this.server.start(socketAddress);
 
-      this.extensionManager.start();
-
-      this.extensionManager.gotoPreInit();
-      this.extensionManager.gotoInit();
-      this.extensionManager.gotoPostInit();
+      this.extensionManagerHolder.startCaller().run();
 
       if (registerDefaultListeners) {
         DefaultListenersRegister.register(this.process.eventHandler(), server);
       }
 
-      ServerTerminal.INSTANCE.start();
+      ServerTerminal.init();
 
       return server;
     }

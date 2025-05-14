@@ -1,20 +1,25 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
-
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "8.3.0"
+    id("com.gradleup.shadow") version "9.0.0-beta12"
+    `hex-publishing-conventions`
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(libs.tiny.log.impl)
-    implementation(libs.tiny.log.slf4j)
-    implementation(libs.adventure.ansi)
-    implementation(libs.configurate.json)
-    //implementation("org.jetbrains:annotations:24.0.0")
+    // logging
+    implementation(libs.adventure.slf4j)
+    implementation(project(":logging"))
 
+    // local and remote repository handling
+    implementation(libs.bundles.maven)
+
+    // configuration files
+    implementation(libs.configurate.gson)
+    implementation(libs.configurate.hocon)
+
+    // annotations
+    compileOnly(libs.jetbrains.annotations)
+
+    // testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -29,23 +34,27 @@ tasks.named<Test>("test") {
     }
 }
 
-tasks.named<ShadowJar>("shadowJar") {
-    exclude("META-INF/services/net.kyori.adventure.text.logger.slf4j.ComponentLoggerProvider")
+tasks.shadowJar {
+    dependsOn(":core:shadowJar")
+    archiveFileName = "launcher-all.jar"
 
-    mergeServiceFiles {
-    }
+    // Include core-all.jar inside launcher's fatJar
+    val coreFatJar = project.project(":core")
+        .tasks
+        .named<Jar>("shadowJar")
+        .get()
+        .archiveFile
+        .get()
 
-    val serviceFile = file("src/main/resources/META-INF/services/net.kyori.adventure.text.logger.slf4j.ComponentLoggerProvider")
-    val tmpDir = temporaryDir.resolve("META-INF/services")
-    tmpDir.mkdirs()
-    Files.copy(serviceFile.toPath(), tmpDir.resolve("net.kyori.adventure.text.logger.slf4j.ComponentLoggerProvider").toPath(), StandardCopyOption.REPLACE_EXISTING)
-    from(tmpDir) {
-        into("META-INF/services")
-    }
+    from(coreFatJar)
+
+    mergeServiceFiles()
 }
 
 tasks.jar {
     manifest {
         attributes["Main-Class"] = "com.github.ynverxe.hexserver.launcher.HexServerLauncher"
+        attributes["Implementation-Title"] = "HexServer Launcher"
+        attributes["Implementation-Version"] = project.version
     }
 }

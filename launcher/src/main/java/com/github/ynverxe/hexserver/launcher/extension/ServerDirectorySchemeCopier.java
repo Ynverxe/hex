@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -50,6 +48,10 @@ public class ServerDirectorySchemeCopier {
 
     URL fallbackDirURL = ServerDirectorySchemeCopier.class.getClassLoader()
         .getResource(FALLBACK_FILES_DIR_NAME);
+
+    boolean runningInAJar = "jar".equals(fallbackDirURL.getProtocol());
+    FileSystem fs = runningInAJar ? FileSystems.newFileSystem(fallbackDirURL.toURI(), Collections.emptyMap()) : FileSystems.getDefault(); // necessary if it's run from a .jar
+
     Path fallbackDirPath = Paths.get(fallbackDirURL.toURI());
 
     try (Stream<Path> stream = Files.list(fallbackDirPath)) {
@@ -106,6 +108,8 @@ public class ServerDirectorySchemeCopier {
           }
         }
       }
+    } finally {
+      if (runningInAJar) fs.close();
     }
 
     return !success.isEmpty();
@@ -130,7 +134,7 @@ public class ServerDirectorySchemeCopier {
   }
 
   private Path relativeToServerDir(@NotNull Path path) {
-    return this.serverDir.resolve(path);
+    return this.serverDir.resolve(path.toString());
   }
 
   private boolean canStart() {
