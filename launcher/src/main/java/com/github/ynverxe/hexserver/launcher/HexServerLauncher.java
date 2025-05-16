@@ -1,6 +1,5 @@
 package com.github.ynverxe.hexserver.launcher;
 
-import com.github.ynverxe.hexserver.launcher.extension.ExtensionDownloader;
 import com.github.ynverxe.hexserver.launcher.extension.ServerDirectorySchemeCopier;
 import com.github.ynverxe.hexserver.launcher.library.LibraryDownloader;
 
@@ -35,10 +34,6 @@ public class HexServerLauncher {
         .start();
 
     LibraryDownloader libraryDownloader = new LibraryDownloader(runDirPath);
-
-    // Download extensions
-    ExtensionDownloader downloader = new ExtensionDownloader(runDirPath);
-    downloader.start();
 
     LOGGER.info("Starting HexServer on new process.");
     String classpath = buildClasspath(libraryDownloader.urls());
