@@ -1,7 +1,7 @@
 package com.github.ynverxe.hexserver.launcher.test;
 
 import com.github.ynverxe.hexserver.launcher.file.ServerDirectorySchemeCopier;
-import com.github.ynverxe.hexserver.launcher.util.FileDeleter;
+import com.github.ynverxe.hexserver.launcher.util.FileUtil;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
@@ -28,12 +28,12 @@ public class ServerDirectorySchemeCopierTest {
 
   @AfterEach
   public void clearTempDir() throws IOException {
-    FileDeleter.clearDirectory(TEMP_DIR);
+    FileUtil.clearDirectory(TEMP_DIR);
   }
 
   @Test
   @Order(1)
-  public void testServerConfPresence() throws IOException, URISyntaxException {
+  public void testTestFilePresence() throws IOException, URISyntaxException {
     ServerDirectorySchemeCopier copier = new ServerDirectorySchemeCopier(TEMP_DIR, false);
     copier.start();
 
