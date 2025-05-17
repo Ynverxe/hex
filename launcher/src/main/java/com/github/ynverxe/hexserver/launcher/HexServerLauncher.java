@@ -1,7 +1,7 @@
 package com.github.ynverxe.hexserver.launcher;
 
 import com.github.ynverxe.hexserver.launcher.extension.ExtensionDownloader;
-import com.github.ynverxe.hexserver.launcher.extension.ServerDirectorySchemeCopier;
+import com.github.ynverxe.hexserver.launcher.file.ServerDirectorySchemeCopier;
 import com.github.ynverxe.hexserver.launcher.library.LibraryDownloader;
 
 import com.github.ynverxe.hexserver.launcher.logger.EnvironmentLogger;
