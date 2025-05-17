@@ -21,12 +21,6 @@ includeBuild("../configurate-helper") {
     }
 }
 
-includeBuild("../Minestom") {
-    dependencySubstitution {
-        substitute(module("net.minestom:Minestom"))
-            .using(project(":"))
-    }
-}
 include("launcher")
 include("logging")
 include("demo-extension")
