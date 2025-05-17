@@ -1,6 +1,6 @@
 package com.github.ynverxe.hexserver.launcher.file;
 
-import com.github.ynverxe.hexserver.launcher.util.FileDeleter;
+import com.github.ynverxe.hexserver.launcher.util.FileUtil;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,60 +57,75 @@ public class ServerDirectorySchemeCopier {
     Path fallbackDirPath = Paths.get(fallbackDirURL.toURI());
 
     try (Stream<Path> stream = Files.list(fallbackDirPath)) {
-      Iterator<Path> paths = stream.map(fallbackDirPath::relativize)
-          .iterator();
-
-      while (paths.hasNext()) {
-        final Path relativizedPath = paths.next(); // without the "server-dir" as parent
-        final Path fallbackResourcePath = fallbackDirPath.resolve(relativizedPath); // with "server-dir" as parent
-
-        Path destinationFile = relativeToServerDir(relativizedPath);
-
-        // the full filename relative to the server dir
-        String destinationFilePath = destinationFile.toString();
-
-        boolean isUrlFile = destinationFilePath.endsWith(REMOTE_RESOURCE_FILES_EXTENSION);
-        try {
-          if (isUrlFile && !ignoreUrlFiles) {
-            destinationFilePath = destinationFilePath.substring(0, destinationFilePath.lastIndexOf(REMOTE_RESOURCE_FILES_EXTENSION));
-            destinationFile = Paths.get(destinationFilePath); // without the .url
-
-            // file already exists
-            if (exists(destinationFile))
-              continue;
-
-            // construct definition
-            RemoteResourceDefinition definition;
-            try (InputStream definitionContent = newInputStream(fallbackResourcePath)) {
-              definition = parseUrlFile(definitionContent);
-            }
-
-            Listener listener = new ProgressiveFileCopy(destinationFile);
-            RemoteResourceDownloader.content(definition, listener);
-          } else {
-            // file already exists
-            if (exists(destinationFile))
-              continue;
-
-            Listener listener = new ProgressiveFileCopy(destinationFile);
-            InputStream content = newInputStream(fallbackResourcePath);
-            RemoteResourceDownloader.consumeContent(content, listener);
-          }
-        } catch (Exception e) {
-          for (Path path : success) {
-            FileDeleter.deleteFile(path);
-          }
-          throw new RuntimeException("Cannot download file '" + relativizedPath + "'", e);
-        }
-
-        success.add(relativizedPath);
-        LOGGER.info("File {} created successfully", destinationFile);
-      }
+      handlePaths(stream.iterator(), fallbackDirPath, success);
     } finally {
       if (runningInAJar) fs.close();
     }
 
     return !success.isEmpty();
+  }
+
+  private void handlePaths(Iterator<Path> paths, Path fallbackDirPath, List<Path> success) throws IOException {
+    while (paths.hasNext()) {
+      final Path path = paths.next(); // with "server-dir" as parent
+      final Path relativizedPath = fallbackDirPath.relativize(path); // without the "server-dir" as parent
+
+      Path destinationFile = relativeToServerDir(relativizedPath);
+
+      // the full filename relative to the server dir
+      String destinationFilePath = destinationFile.toString();
+
+      if (Files.isDirectory(path)) {
+        handlePaths(list(path).iterator(), fallbackDirPath, success);
+      } else {
+        handleFile(relativizedPath, path, destinationFile, destinationFilePath, success);
+      }
+    }
+  }
+
+  private void handleFile(
+      Path relativizedPath,
+      Path fallbackResourcePath,
+      Path destinationFile,
+      String destinationFilePath,
+      List<Path> success
+  ) throws IOException {
+    boolean isUrlFile = destinationFilePath.endsWith(REMOTE_RESOURCE_FILES_EXTENSION);
+    try {
+      if (isUrlFile && !ignoreUrlFiles) {
+        destinationFilePath = destinationFilePath.substring(0, destinationFilePath.lastIndexOf(REMOTE_RESOURCE_FILES_EXTENSION));
+        destinationFile = Paths.get(destinationFilePath); // without the .url
+
+        // file already exists
+        if (exists(destinationFile))
+          return;
+
+        // construct definition
+        RemoteResourceDefinition definition;
+        try (InputStream definitionContent = newInputStream(fallbackResourcePath)) {
+          definition = parseUrlFile(definitionContent);
+        }
+
+        Listener listener = new ProgressiveFileCopy(destinationFile);
+        RemoteResourceDownloader.content(definition, listener);
+      } else {
+        // file already exists
+        if (exists(destinationFile))
+          return;
+
+        Listener listener = new ProgressiveFileCopy(destinationFile);
+        InputStream content = newInputStream(fallbackResourcePath);
+        RemoteResourceDownloader.consumeContent(content, listener);
+      }
+    } catch (Exception e) {
+      for (Path path : success) {
+        FileUtil.deleteFile(path);
+      }
+      throw new RuntimeException("Cannot download file '" + relativizedPath + "'", e);
+    }
+
+    success.add(relativizedPath);
+    LOGGER.info("File {} created successfully", destinationFile);
   }
 
   private Path relativeToServerDir(@NotNull Path path) {
@@ -137,6 +152,7 @@ public class ServerDirectorySchemeCopier {
 
     public ProgressiveFileCopy(Path destination) throws IOException {
       this.destination = destination;
+      FileUtil.createParentDirectories(destination);
       this.stream = Files.newOutputStream(destination, StandardOpenOption.CREATE_NEW);
     }
 

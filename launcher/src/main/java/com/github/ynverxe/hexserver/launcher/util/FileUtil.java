@@ -10,6 +10,13 @@ public final class FileUtil {
   private FileUtil() {
   }
 
+  public static void createParentDirectories(Path path) throws IOException {
+    Path parent = path.getParent();
+    if (!exists(parent)) {
+      createDirectories(parent);
+    }
+  }
+
   public static void deleteFile(Path path) throws IOException {
     if (!exists(path)) return;
     if (isDirectory(path)) {
