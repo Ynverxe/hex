@@ -1,6 +1,7 @@
 package com.github.ynverxe.hexserver.launcher.test;
 
-import com.github.ynverxe.hexserver.launcher.extension.ServerDirectorySchemeCopier;
+import com.github.ynverxe.hexserver.launcher.file.ServerDirectorySchemeCopier;
+import com.github.ynverxe.hexserver.launcher.util.FileDeleter;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
@@ -9,19 +10,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.nio.file.Files.createTempDirectory;
+import static java.nio.file.Files.exists;
 
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 public class ServerDirectorySchemeCopierTest {
 
   private static final Path TEMP_DIR;
+  private static final String TEST_FILENAME = "awesome-text.txt";
 
   static {
     try {
       TEMP_DIR = createTempDirectory("temp-server-dir");
-
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @AfterEach
+  public void clearTempDir() throws IOException {
+    FileDeleter.clearDirectory(TEMP_DIR);
   }
 
   @Test
@@ -30,7 +37,7 @@ public class ServerDirectorySchemeCopierTest {
     ServerDirectorySchemeCopier copier = new ServerDirectorySchemeCopier(TEMP_DIR, false);
     copier.start();
 
-    Path targetFile = TEMP_DIR.resolve("awesome-text.txt");
+    Path targetFile = TEMP_DIR.resolve(TEST_FILENAME);
     Assertions.assertTrue(
         Files.lines(targetFile)
             .anyMatch("HELLYEAH!"::equals)
@@ -41,10 +48,8 @@ public class ServerDirectorySchemeCopierTest {
   @Order(2)
   public void testFileSkipDuePresence() throws IOException, URISyntaxException {
     ServerDirectorySchemeCopier copier = new ServerDirectorySchemeCopier(TEMP_DIR, false);
+    copier.start();
     Assertions.assertFalse(copier.start());
-
-    Path targetFile = TEMP_DIR.resolve("awesome-text.txt");
-    Files.delete(targetFile);
   }
 
   @Test
@@ -53,10 +58,7 @@ public class ServerDirectorySchemeCopierTest {
     ServerDirectorySchemeCopier copier = new ServerDirectorySchemeCopier(TEMP_DIR, true);
     copier.start();
 
-    Path targetFile = TEMP_DIR.resolve("awesome-text.txt.url");
-    Assertions.assertTrue(
-        Files.lines(targetFile)
-            .anyMatch("https://gist.githubusercontent.com/Ynverxe/9758b2801828881e1642c7d802ea26da/raw/7241626ebffb0c53219d6e6e3c1ade4fd1164f79/awesome-text.txt"::equals)
-    );
+    Path targetFile = TEMP_DIR.resolve(TEST_FILENAME);
+    Assertions.assertFalse(exists(targetFile));
   }
 }
