@@ -1,5 +1,5 @@
 [libraries]
-minestom = "net.minestom:Minestom:."
+minestom = "net.minestom:minestom-snapshots:ebaa2bbf64"
 minestom-extensions = "dev.hollowcube:minestom-ce-extensions:1.2.0"
 configurate-hocon = "org.spongepowered:configurate-hocon:4.0.0"
 configurate-gson = "org.spongepowered:configurate-gson:4.0.0"
