@@ -6,8 +6,8 @@ import java.nio.file.Path;
 import static java.nio.file.Files.*;
 import static java.nio.file.Files.delete;
 
-public final class FileDeleter {
-  private FileDeleter() {
+public final class FileUtil {
+  private FileUtil() {
   }
 
   public static void deleteFile(Path path) throws IOException {
@@ -19,13 +19,11 @@ public final class FileDeleter {
   }
 
   public static void clearDirectory(Path path) throws IOException {
+    if (!exists(path)) return;
+
     list(path).forEach(someFile -> {
       try {
-        if (isDirectory(someFile)) {
-          deleteFile(someFile);
-        }
-
-        delete(someFile);
+        deleteFile(someFile);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
