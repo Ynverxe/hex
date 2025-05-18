@@ -44,14 +44,14 @@ public class JarExtensionCollector implements ExtensionCollector {
     if (!Files.exists(this.extensionsFolder)) return extensions;
 
     for (Path path : getPaths()) {
-      DiscoveredExtension discoveredExtension = ExtensionDiscoverer.discoverExtension(path, this.extensionsFolder::resolve);
-
-      String name = discoveredExtension.meta().name();
-      if (extensions.containsKey(name)) {
-        throw new IllegalArgumentException("Extension '" + name + "' was already discovered");
-      }
-
       try {
+        DiscoveredExtension discoveredExtension = ExtensionDiscoverer.discoverExtension(path, this.extensionsFolder::resolve);
+
+        String name = discoveredExtension.meta().name();
+        if (extensions.containsKey(name)) {
+          throw new IllegalArgumentException("Extension '" + name + "' was already discovered");
+        }
+
         extensions.put(discoveredExtension.meta().name(), discoveredExtension);
       } catch (Throwable error) {
         LOGGER.error("Unexpected error while discovering extension at: {}", path, error);
