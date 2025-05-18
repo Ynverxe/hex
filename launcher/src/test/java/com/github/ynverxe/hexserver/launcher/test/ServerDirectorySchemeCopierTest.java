@@ -1,6 +1,7 @@
 package com.github.ynverxe.hexserver.launcher.test;
 
 import com.github.ynverxe.hexserver.launcher.file.ServerDirectorySchemeCopier;
+import com.github.ynverxe.hexserver.launcher.test.system.SetupGithubToken;
 import com.github.ynverxe.hexserver.launcher.util.FileUtil;
 import org.junit.jupiter.api.*;
 
@@ -24,6 +25,11 @@ public class ServerDirectorySchemeCopierTest {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @BeforeAll
+  public static void setupGithubToken() {
+    SetupGithubToken.setup();
   }
 
   @AfterEach
