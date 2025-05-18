@@ -3,6 +3,7 @@ package com.github.ynverxe.hexserver.terminal;
 import com.github.ynverxe.hexserver.HexServer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
+import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +35,13 @@ public class ServerTerminal implements Runnable {
   }
 
   private void start() {
-    MinecraftServer.getSchedulerManager()
+    Task task = MinecraftServer.getSchedulerManager()
         .buildTask(this)
         .repeat(TaskSchedule.immediate())
         .schedule();
 
     HexServer.instance().addShutdownListener(hexServer -> {
+      task.cancel();
       INSTANCE.set(null);
       scanner.close();
     });
