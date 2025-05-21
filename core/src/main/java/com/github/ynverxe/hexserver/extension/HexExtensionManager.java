@@ -145,7 +145,6 @@ public final class HexExtensionManager {
 
       try {
         extension.internalEnable();
-        extension.enabled = true;
       } catch (Throwable e) {
         LOGGER.error("Unexpected error while enabling extension {}", extension.name(), e);
         discardExtension(extension.name(), this.graphNodes::remove);
