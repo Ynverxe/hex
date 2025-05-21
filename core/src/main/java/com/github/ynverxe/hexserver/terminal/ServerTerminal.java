@@ -20,11 +20,12 @@ public class ServerTerminal implements Runnable {
   private boolean alive = true;
 
   private ServerTerminal() {
-    Thread thread = Thread.ofVirtual().start(this);
+    this.hexServer.addShutdownListener(hexServer -> this.shutdown());
+
+    Thread thread = Thread.ofVirtual().unstarted(this);
     thread.setName("ServerTerminalThread");
     thread.setDaemon(true);
-
-    this.hexServer.addShutdownListener(hexServer -> this.shutdown());
+    thread.start();
   }
 
   @Override
