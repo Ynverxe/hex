@@ -148,6 +148,8 @@ public class HexExtension implements ExtensionMeta, EventHandler<Event>, Schedul
     this.schedulerTicker = process.scheduler().buildTask(this.scheduler::process)
         .repeat(TaskSchedule.immediate()).schedule();
 
+    this.enabled = true;
+
     enable();
   }
 
