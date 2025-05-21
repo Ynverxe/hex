@@ -1,10 +1,8 @@
 package com.github.ynverxe.hexserver.terminal;
 
 import com.github.ynverxe.hexserver.HexServer;
-import net.minestom.server.MinecraftServer;
+import net.minestom.server.ServerProcess;
 import net.minestom.server.command.CommandManager;
-import net.minestom.server.timer.Task;
-import net.minestom.server.timer.TaskSchedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,38 +11,49 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ServerTerminal implements Runnable {
 
-  public static final AtomicReference<ServerTerminal> INSTANCE = new AtomicReference<>(null);
-
+  private static final AtomicReference<ServerTerminal> INSTANCE = new AtomicReference<>(null);
   private static final Logger LOGGER = LoggerFactory.getLogger(ServerTerminal.class);
-  private final Scanner scanner = new Scanner(System.in);
 
-  private ServerTerminal() {}
+  private final Scanner scanner = new Scanner(System.in);
+  private final HexServer hexServer = HexServer.instance();
+
+  private boolean alive = true;
+
+  private ServerTerminal() {
+    Thread thread = Thread.ofVirtual().start(this);
+    thread.setName("ServerTerminalThread");
+    thread.setDaemon(true);
+
+    this.hexServer.addShutdownListener(hexServer -> this.shutdown());
+  }
 
   @Override
   public void run() {
-    try {
-      CommandManager commandManager = HexServer.instance().process().command();
-
-      if (scanner.hasNext()) {
-        String input = scanner.nextLine();
-        commandManager.execute(commandManager.getConsoleSender(), input);
+    while (alive) {
+      try {
+        if (scanner.hasNext()) {
+          String input = scanner.nextLine();
+          submitInput(input);
+        }
+      } catch (Exception e) {
+        LOGGER.error("Cannot read input", e);
       }
-    } catch (Exception e) {
-      LOGGER.error("Cannot read input", e);
     }
   }
 
-  private void start() {
-    Task task = MinecraftServer.getSchedulerManager()
-        .buildTask(this)
-        .repeat(TaskSchedule.immediate())
-        .schedule();
+  private void shutdown() {
+    alive = false;
+    INSTANCE.set(null);
+    scanner.close();
+  }
 
-    HexServer.instance().addShutdownListener(hexServer -> {
-      task.cancel();
-      INSTANCE.set(null);
-      scanner.close();
-    });
+  private void submitInput(String input) {
+    ServerProcess process = this.hexServer.process();
+    process.scheduler()
+        .buildTask(() -> {
+          CommandManager commandManager = process.command();
+          commandManager.execute(commandManager.getConsoleSender(), input);
+        });
   }
 
   public static void init() {
@@ -52,9 +61,7 @@ public class ServerTerminal implements Runnable {
       if (serverTerminal != null)
         throw new IllegalStateException("Cannot override instance");
 
-      ServerTerminal terminal = new ServerTerminal();
-      terminal.start();
-      return terminal;
+      return new ServerTerminal();
     });
   }
 }
