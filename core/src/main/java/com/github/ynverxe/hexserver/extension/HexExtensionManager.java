@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -225,6 +226,12 @@ public final class HexExtensionManager {
   }
 
   private void loadExtension(DiscoveredExtension discoveredExtension) throws Throwable {
+    Path extensionDataDir = discoveredExtension.meta().directory();
+
+    if (!Files.exists(extensionDataDir)) {
+      Files.createDirectories(extensionDataDir);
+    }
+
     discoveredExtension.classLoader().init(this, discoveredExtension.meta());
 
     HexExtension.InstantiationContext values = new HexExtension.InstantiationContext(this, discoveredExtension.meta());
