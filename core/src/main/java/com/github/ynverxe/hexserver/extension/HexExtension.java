@@ -166,16 +166,19 @@ public class HexExtension implements ExtensionMeta, EventHandler<Event>, Schedul
     try {
       disable();
     } finally {
-      this.enabled = false;
-
-      ServerProcess process = HexServer.instance().process();
-      process.eventHandler().removeChild(this.eventNode);
-      this.worldManager.internalView().forEach(hexWorld -> {
-        hexWorld.clearPlayers();
-        this.worldManager.unregister(hexWorld);
-      });
+      try {
+        ServerProcess process = HexServer.instance().process();
+        process.eventHandler().removeChild(this.eventNode);
+        this.worldManager.internalView().forEach(hexWorld -> {
+          hexWorld.clearPlayers();
+          this.worldManager.unregister(hexWorld);
+        });
+      } finally {
+        this.enabled = false;
+      }
     }
   }
+
 
   /**
    * Abstract logic to enable this extension.
