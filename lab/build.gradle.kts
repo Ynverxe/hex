@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly(libs.minestom)
     compileOnly(project(":core"))
 }
 
