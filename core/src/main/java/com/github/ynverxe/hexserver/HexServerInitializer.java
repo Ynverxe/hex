@@ -5,12 +5,10 @@ import com.github.ynverxe.configuratehelper.handler.source.URLConfigurationFacto
 import com.github.ynverxe.hexserver.extension.HexExtensionManager;
 import com.github.ynverxe.hexserver.extension.internal.JarExtensionCollector;
 import com.github.ynverxe.hexserver.internal.configuration.ServerConfiguration;
-import com.github.ynverxe.hexserver.internal.listener.DefaultListenersRegister;
 import com.github.ynverxe.hexserver.terminal.ServerTerminal;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.ServerProcess;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +37,6 @@ public class HexServerInitializer {
   private final MinecraftServer server;
   private final ServerProcess process;
 
-  private boolean registerDefaultListeners;
-
   private final HexExtensionManager.Holder extensionManagerHolder;
 
   private @NotNull List<String> startArguments = Collections.emptyList();
@@ -65,7 +61,6 @@ public class HexServerInitializer {
     this.serverConfigurationValues = serverConfigurationValues;
     this.server = server;
     this.process = process;
-    this.registerDefaultListeners = registerDefaultListeners;
     this.extensionManagerHolder = extensionManagerHolder;
   }
 
@@ -103,12 +98,6 @@ public class HexServerInitializer {
     this.serverConfigurationValues = this.serverConfiguration.node().get(ServerConfiguration.class);
   }
 
-  @Contract("-> this")
-  public HexServerInitializer registerDefaultListeners() {
-    this.registerDefaultListeners = true;
-    return this;
-  }
-
   public void startArguments(@NotNull List<String> startArguments) {
     this.startArguments = Objects.requireNonNull(startArguments);
   }
@@ -143,10 +132,6 @@ public class HexServerInitializer {
       this.server.start(socketAddress);
 
       this.extensionManagerHolder.startCaller().run();
-
-      if (registerDefaultListeners) {
-        DefaultListenersRegister.register(this.process.eventHandler(), server);
-      }
 
       ServerTerminal.init();
 
