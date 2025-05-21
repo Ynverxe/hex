@@ -7,14 +7,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static com.github.ynverxe.hexserver.util.ArgumentUtil.isArgumentPresent;
-
 /**
  * Default entry point, used in launcher module.
  */
 public class HexServerMain {
 
-  public static final String DONT_REGISTER_DEFAULT_LISTENERS_ARGUMENT = "DontRegisterDefaultListeners";
   private static volatile boolean STARTED = false;
 
   public static void main(String[] args) throws Throwable {
@@ -34,10 +31,6 @@ public class HexServerMain {
       Path runDirPath = Paths.get(runDir);
 
       HexServerInitializer initializer = new HexServerInitializer(runDirPath);
-
-      if (!isArgumentPresent(DONT_REGISTER_DEFAULT_LISTENERS_ARGUMENT, args)) {
-        initializer.registerDefaultListeners();
-      }
 
       initializer.startArguments(List.of(args));
 
