@@ -6,7 +6,7 @@ plugins {
 dependencies {
     api(libs.configurate.helper)
     api(libs.configurate.hocon)
-    compileOnlyApi(libs.minestom)
+    compileOnly(libs.minestom)
 
     // logging
     implementation(project(":logging"))

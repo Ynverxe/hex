@@ -4,6 +4,9 @@ plugins {
     kotlin("jvm") version "2.1.0"
 }
 
+group = "com.github.ynverxe.hexserver"
+version = "0.1.0-indev"
+
 dependencies {
     compileOnly("com.gradleup.shadow:shadow-gradle-plugin:9.0.0-beta12")
     implementation("org.spongepowered:configurate-hocon:4.0.0")
