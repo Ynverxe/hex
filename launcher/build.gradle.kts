@@ -5,6 +5,8 @@ plugins {
 }
 
 dependencies {
+    compileOnly(libs.minestom)
+
     // logging
     implementation(libs.adventure.slf4j)
     implementation(project(":logging"))
