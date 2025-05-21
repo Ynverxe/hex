@@ -11,11 +11,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.nio.file.Files.exists;
 import static java.nio.file.Files.list;
 
 /**
@@ -41,8 +44,6 @@ public class JarExtensionCollector implements ExtensionCollector {
   public @NotNull ConcurrentHashMap<String, DiscoveredExtension> collect() throws Throwable {
     ConcurrentHashMap<String, DiscoveredExtension> extensions = new ConcurrentHashMap<>();
 
-    if (!Files.exists(this.extensionsFolder)) return extensions;
-
     for (Path path : getPaths()) {
       try {
         DiscoveredExtension discoveredExtension = ExtensionDiscoverer.discoverExtension(path, this.extensionsFolder::resolve);
@@ -61,10 +62,12 @@ public class JarExtensionCollector implements ExtensionCollector {
     return extensions;
   }
 
-  private List<Path> getPaths() throws Throwable {
-    return Stream.concat(list(this.extensionsFolder), localizeArgumentExtensions())
+  private Set<Path> getPaths() throws Throwable { // use Set to avoid repeated elements
+    Stream<Path> argumentExtensions = localizeArgumentExtensions();
+    Stream<Path> extensionOnFolder = exists(this.extensionsFolder) ? list(this.extensionsFolder) : Stream.empty();
+    return Stream.concat(extensionOnFolder, argumentExtensions)
         .filter(path -> path.toString().endsWith(".jar"))
-        .toList();
+        .collect(Collectors.toSet());
   }
 
   private Stream<Path> localizeArgumentExtensions() {

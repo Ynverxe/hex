@@ -98,7 +98,7 @@ public class HexExtension implements ExtensionMeta, EventHandler<Event>, Schedul
   private final @NotNull HexWorldManager worldManager;
   private final @NotNull String namespace;
 
-  boolean enabled;
+  private boolean enabled;
   boolean removed;
 
   private @Nullable Task schedulerTicker;
@@ -148,6 +148,8 @@ public class HexExtension implements ExtensionMeta, EventHandler<Event>, Schedul
     this.schedulerTicker = process.scheduler().buildTask(this.scheduler::process)
         .repeat(TaskSchedule.immediate()).schedule();
 
+    this.enabled = true;
+
     enable();
   }
 
@@ -161,15 +163,22 @@ public class HexExtension implements ExtensionMeta, EventHandler<Event>, Schedul
       this.schedulerTicker.cancel();
     }
 
-    disable();
-
-    ServerProcess process = HexServer.instance().process();
-    process.eventHandler().removeChild(this.eventNode);
-    this.worldManager.internalView().forEach(hexWorld -> {
-      hexWorld.clearPlayers();
-      this.worldManager.unregister(hexWorld);
-    });
+    try {
+      disable();
+    } finally {
+      try {
+        ServerProcess process = HexServer.instance().process();
+        process.eventHandler().removeChild(this.eventNode);
+        this.worldManager.internalView().forEach(hexWorld -> {
+          hexWorld.clearPlayers();
+          this.worldManager.unregister(hexWorld);
+        });
+      } finally {
+        this.enabled = false;
+      }
+    }
   }
+
 
   /**
    * Abstract logic to enable this extension.

@@ -36,3 +36,4 @@ includeBuild("../configurate-helper") {
 include("launcher")
 include("logging")
 include("demo-extension")
+include("lab")
