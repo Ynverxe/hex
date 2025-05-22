@@ -42,6 +42,8 @@ public class HexServerLauncher {
     command.addAll(Arrays.asList(args));
 
     ProcessBuilder processBuilder = new ProcessBuilder(command);
+
+    processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
     processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
     processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     processBuilder.directory(new File(System.getProperty("user.dir")));
