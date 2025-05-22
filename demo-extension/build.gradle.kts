@@ -11,9 +11,12 @@ sourceSets {
 }
 
 dependencies {
+    compileOnly(libs.minestom)
     compileOnly(project(":core"))
     compileOnly(sourceSets["dependency"].output.classesDirs)
+
     add("dependencyCompileOnly", project(":core"))
+    add("dependencyCompileOnly", libs.minestom)
 }
 
 tasks.create<Jar>("makeDependencyJar") {
