@@ -38,6 +38,8 @@ public class RunHexServerTask extends JavaExec {
   @TaskAction
   @Override
   public void exec() {
+    setStandardInput(System.in);
+
     for (Jar extensionTask : this.extensionTasks) {
       File file = extensionTask.getArchiveFile().get().getAsFile();
       args("-add-extension=" + "\"" + file.getAbsolutePath() + "\"");
