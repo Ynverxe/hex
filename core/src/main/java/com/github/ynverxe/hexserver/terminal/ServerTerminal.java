@@ -3,6 +3,7 @@ package com.github.ynverxe.hexserver.terminal;
 import com.github.ynverxe.hexserver.HexServer;
 import net.minestom.server.ServerProcess;
 import net.minestom.server.command.CommandManager;
+import net.minestom.server.command.builder.CommandResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class ServerTerminal implements Runnable {
         .buildTask(() -> {
           CommandManager commandManager = process.command();
           commandManager.execute(commandManager.getConsoleSender(), input);
-        });
+        }).schedule();
   }
 
   public static void init() {
