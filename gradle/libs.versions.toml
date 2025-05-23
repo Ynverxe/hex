@@ -1,4 +1,5 @@
 [libraries]
+jline = "org.jline:jline:3.30.0"
 minestom = "net.minestom:minestom-snapshots:ebaa2bbf64"
 minestom-extensions = "dev.hollowcube:minestom-ce-extensions:1.2.0"
 configurate-hocon = "org.spongepowered:configurate-hocon:4.0.0"

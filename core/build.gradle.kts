@@ -10,6 +10,9 @@ dependencies {
 
     // logging
     implementation(project(":logging"))
+    implementation(libs.jline)
+
+    compileOnly(libs.adventure.ansi)
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
