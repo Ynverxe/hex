@@ -37,19 +37,8 @@ public class HexServerLauncher {
 
     LOGGER.info("Starting HexServer on new process.");
     String classpath = buildClasspath(libraryDownloader.urls());
-    List<String> command = new ArrayList<>();
-    command.addAll(Arrays.asList("java","-cp", classpath, "com.github.ynverxe.hexserver.main.HexServerMain"));
-    command.addAll(Arrays.asList(args));
 
-    ProcessBuilder processBuilder = new ProcessBuilder(command);
-
-    processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
-    processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
-    processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-    processBuilder.directory(new File(System.getProperty("user.dir")));
-
-    processBuilder.environment().put("parent-pid", String.valueOf(ProcessHandle.current().pid()));
-
+    ProcessBuilder processBuilder = createProcessBuilder(classpath, args);
     Process process = processBuilder.start();
     long pid = process.pid();
     LOGGER.info("HexServer started on pid {}", pid);
@@ -83,5 +72,21 @@ public class HexServerLauncher {
     builder.deleteCharAt(builder.length() - 1);
 
     return builder.toString();
+  }
+
+  private static ProcessBuilder createProcessBuilder(String classpath, String[] args) {
+    List<String> command = new ArrayList<>();
+    command.add("java");
+    System.getProperties().forEach((key, value) -> command.add("-D" + key + "=" + value));
+    command.addAll(Arrays.asList("-cp", classpath, "com.github.ynverxe.hexserver.main.HexServerMain"));
+    command.addAll(Arrays.asList(args));
+
+    ProcessBuilder processBuilder = new ProcessBuilder(command);
+    processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+    processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+    processBuilder.directory(new File(System.getProperty("user.dir")));
+    processBuilder.environment().putAll(System.getenv());
+    processBuilder.environment().put("parent-pid", String.valueOf(ProcessHandle.current().pid()));
+    return processBuilder;
   }
 }
