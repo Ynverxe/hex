@@ -1,7 +1,7 @@
 package com.github.ynverxe.hexserver;
 
-import com.github.ynverxe.configuratehelper.handler.FastConfiguration;
-import com.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
+import io.github.ynverxe.configuratehelper.handler.FastConfiguration;
+import io.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
 import com.github.ynverxe.hexserver.extension.HexExtensionManager;
 import com.github.ynverxe.hexserver.extension.internal.JarExtensionCollector;
 import com.github.ynverxe.hexserver.internal.configuration.ServerConfiguration;
