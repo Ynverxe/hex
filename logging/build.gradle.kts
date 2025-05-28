@@ -1,6 +1,9 @@
 plugins {
     id("java-library")
+    id("hex-publishing-conventions")
 }
+
+project.description = "Abstract logging logic for hex-server"
 
 repositories {
     mavenCentral()

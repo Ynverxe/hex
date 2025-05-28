@@ -1,7 +1,10 @@
 plugins {
     id("java-library")
     id("com.gradleup.shadow") version "8.3.0"
+    id("hex-publishing-conventions")
 }
+
+project.description = "The 'core' module of hex-server, which defines main functionalities."
 
 dependencies {
     api(libs.configurate.helper)

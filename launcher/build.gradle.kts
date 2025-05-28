@@ -1,8 +1,10 @@
 plugins {
     id("java")
     id("com.gradleup.shadow") version "9.0.0-beta12"
-    `hex-publishing-conventions`
+    id("hex-publishing-conventions")
 }
+
+project.description = "A launcher for hex-server.core"
 
 dependencies {
     compileOnly(libs.minestom)
