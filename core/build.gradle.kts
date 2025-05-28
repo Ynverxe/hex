@@ -4,6 +4,8 @@ plugins {
     id("hex-publishing-conventions")
 }
 
+project.description = "The 'core' module of hex-server, which defines main functionalities."
+
 dependencies {
     api(libs.configurate.helper)
     api(libs.configurate.hocon)

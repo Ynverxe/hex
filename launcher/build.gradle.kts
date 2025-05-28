@@ -4,6 +4,8 @@ plugins {
     id("hex-publishing-conventions")
 }
 
+project.description = "A launcher for hex-server.core"
+
 dependencies {
     compileOnly(libs.minestom)
 
