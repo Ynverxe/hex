@@ -1,6 +1,6 @@
 subprojects {
     plugins.withId("java") {
-        apply(plugin = "hex-publishing-conventions")
+        apply(plugin = "hex-java-conventions")
     }
 
     group = "com.github.ynverxe.hexserver"
