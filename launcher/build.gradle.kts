@@ -11,7 +11,7 @@ dependencies {
 
     // logging
     implementation(libs.adventure.slf4j)
-    implementation(project(":logging"))
+    implementation(project(":hex-logging"))
 
     // local and remote repository handling
     implementation(libs.bundles.maven)
@@ -39,11 +39,11 @@ tasks.named<Test>("test") {
 }
 
 tasks.shadowJar {
-    dependsOn(":core:shadowJar")
+    dependsOn(":hex-core:shadowJar")
     archiveFileName = "launcher-all.jar"
 
     // Include core-all.jar inside launcher's fatJar
-    val coreFatJar = project.project(":core")
+    val coreFatJar = project.project(":hex-core")
         .tasks
         .named<Jar>("shadowJar")
         .get()

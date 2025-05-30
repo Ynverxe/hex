@@ -23,8 +23,9 @@ develocity {
 
 rootProject.name = "hex-server"
 
-include("core")
-include("launcher")
-include("logging")
-include("demo-extension")
-include("lab")
+val projects = arrayOf("core", "launcher", "logging", "demo-extension", "lab")
+
+projects.forEach {
+    include(":$it")
+    project(":$it").name = "hex-$it"
+}

@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "2.1.0"
 }
 
-group = "com.github.ynverxe.hexserver"
+group = "io.github.ynverxe"
 version = "0.1.0-indev"
 
 dependencies {

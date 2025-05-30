@@ -12,7 +12,7 @@ dependencies {
     compileOnly(libs.minestom)
 
     // logging
-    implementation(project(":logging"))
+    implementation(project(":hex-logging"))
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -47,7 +47,7 @@ tasks.named<Test>("test") {
         events("passed")
     }
 
-    val demoExtensionJarTask = rootProject.project(":demo-extension").tasks.named<Jar>("jar")
+    val demoExtensionJarTask = rootProject.project(":hex-demo-extension").tasks.named<Jar>("jar")
     dependsOn(demoExtensionJarTask)
 
     val demoExtensionJar = demoExtensionJarTask
@@ -57,7 +57,7 @@ tasks.named<Test>("test") {
         .asFile
         .absolutePath
 
-    val demoExtensionDependencyJarTask = rootProject.project(":demo-extension").tasks.named<Jar>("makeDependencyJar")
+    val demoExtensionDependencyJarTask = rootProject.project(":hex-demo-extension").tasks.named<Jar>("makeDependencyJar")
     dependsOn(demoExtensionDependencyJarTask)
 
     val demoDependencyExtensionJar = demoExtensionDependencyJarTask
