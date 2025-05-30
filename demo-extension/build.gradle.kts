@@ -12,10 +12,10 @@ sourceSets {
 
 dependencies {
     compileOnly(libs.minestom)
-    compileOnly(project(":core"))
+    compileOnly(project(":hex-core"))
     compileOnly(sourceSets["dependency"].output.classesDirs)
 
-    add("dependencyCompileOnly", project(":core"))
+    add("dependencyCompileOnly", project(":hex-core"))
     add("dependencyCompileOnly", libs.minestom)
 }
 
