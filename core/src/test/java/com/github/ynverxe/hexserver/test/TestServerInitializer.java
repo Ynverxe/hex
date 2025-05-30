@@ -1,6 +1,6 @@
 package com.github.ynverxe.hexserver.test;
 
-import com.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
+import io.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
 import com.github.ynverxe.hexserver.HexServer;
 import com.github.ynverxe.hexserver.HexServerInitializer;
 import com.github.ynverxe.hexserver.extension.HexExtensionManager;

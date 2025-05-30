@@ -1,7 +1,7 @@
 package com.github.ynverxe.hexserver.extension;
 
-import com.github.ynverxe.configuratehelper.handler.factory.ConfigurationLoaderFactory;
-import com.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
+import io.github.ynverxe.configuratehelper.handler.factory.ConfigurationLoaderFactory;
+import io.github.ynverxe.configuratehelper.handler.source.URLConfigurationFactory;
 import com.github.ynverxe.hexserver.HexServer;
 import com.github.ynverxe.hexserver.world.HexWorld;
 import com.github.ynverxe.hexserver.world.HexWorldManager;
@@ -350,7 +350,7 @@ public class HexExtension implements ExtensionMeta, EventHandler<Event>, Schedul
   /**
    * The {@link URLConfigurationFactory} associated with this extension.
    * <p>
-   * It's a utility class that is preconfigured to create {@link com.github.ynverxe.configuratehelper.handler.FastConfiguration}
+   * It's a utility class that is preconfigured to create {@link io.github.ynverxe.configuratehelper.handler.FastConfiguration}
    * inside from the {@link #directory()} directory and look for fallback configuration sources inside this extension's JAR file.
    *
    * @return this extension's configuration factory.
