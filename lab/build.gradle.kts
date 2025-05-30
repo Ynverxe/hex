@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     compileOnly(libs.minestom)
-    compileOnly(project(":core"))
+    compileOnly(project(":hex-core"))
 }
 
 tasks.generateLauncher {
