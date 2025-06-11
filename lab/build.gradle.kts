@@ -1,8 +1,8 @@
-import com.github.ynverxe.hexserver.helper.file.DefaultConfiguration
+import io.github.ynverxe.hexserver.plugin.file.DefaultConfiguration
 
 plugins {
     id("java")
-    id("launcher-helper")
+    id("hex-plugin")
     id("com.gradleup.shadow") version "9.0.0-beta12"
 }
 
