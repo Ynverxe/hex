@@ -1,7 +1,7 @@
-package com.github.ynverxe.hexserver.helper.file;
+package io.github.ynverxe.hexserver.plugin.file;
 
-import com.github.ynverxe.hexserver.helper.GenerateLauncherTask;
-import com.github.ynverxe.hexserver.helper.configuration.ConfigurationNodeBuilder;
+import io.github.ynverxe.hexserver.plugin.GenerateLauncherTask;
+import io.github.ynverxe.hexserver.plugin.configuration.ConfigurationNodeBuilder;
 import org.gradle.api.Action;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;

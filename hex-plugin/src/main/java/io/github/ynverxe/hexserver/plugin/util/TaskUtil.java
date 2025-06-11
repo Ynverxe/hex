@@ -1,4 +1,4 @@
-package com.github.ynverxe.hexserver.helper.util;
+package io.github.ynverxe.hexserver.plugin.util;
 
 import org.gradle.api.Project;
 import org.gradle.api.Task;

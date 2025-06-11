@@ -1,4 +1,4 @@
-package com.github.ynverxe.hexserver.helper.configuration;
+package io.github.ynverxe.hexserver.plugin.configuration;
 
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;

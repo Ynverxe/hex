@@ -7,7 +7,7 @@ dependencyResolutionManagement {
 }
 
 pluginManagement {
-    includeBuild("launcher-plugin")
+    includeBuild("hex-plugin")
 }
 
 plugins {
