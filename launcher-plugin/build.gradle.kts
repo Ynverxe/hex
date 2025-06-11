@@ -19,10 +19,10 @@ repositories {
 
 gradlePlugin {
     plugins {
-        create("launcher-helper") {
-            id = "launcher-helper"
-            implementationClass = "com.github.ynverxe.hexserver.helper.HexHelperPlugin"
-            description = "Generates util tasks to generate and run a launcher"
+        create("hex-plugin") {
+            id = "hex-plugin"
+            implementationClass = "com.github.ynverxe.hexserver.helper.HexPlugin"
+            description = "Gradle plugin which implements utility task for hex-server"
         }
     }
 }

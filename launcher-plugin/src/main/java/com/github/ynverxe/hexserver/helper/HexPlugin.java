@@ -4,7 +4,7 @@ import com.github.ynverxe.hexserver.helper.run.RunHexServerTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
-public class HexHelperPlugin implements Plugin<Project> {
+public class HexPlugin implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {

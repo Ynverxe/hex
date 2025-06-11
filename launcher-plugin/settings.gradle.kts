@@ -1,1 +1,1 @@
-rootProject.name = "hex-launcher-plugin"
+rootProject.name = "hex-plugin"
