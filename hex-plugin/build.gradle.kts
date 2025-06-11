@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.ynverxe"
-version = "0.1.0-indev"
+version = "1.0.0-indev"
 
 dependencies {
     compileOnly("com.gradleup.shadow:shadow-gradle-plugin:9.0.0-beta12")
