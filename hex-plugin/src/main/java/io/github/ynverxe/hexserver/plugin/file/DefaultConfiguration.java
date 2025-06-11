@@ -1,7 +1,7 @@
-package com.github.ynverxe.hexserver.helper.file;
+package io.github.ynverxe.hexserver.plugin.file;
 
-import com.github.ynverxe.hexserver.helper.configuration.MinestomSource;
-import com.github.ynverxe.hexserver.helper.configuration.ServerConfiguration;
+import io.github.ynverxe.hexserver.plugin.configuration.MinestomSource;
+import io.github.ynverxe.hexserver.plugin.configuration.ServerConfiguration;
 
 import java.util.function.Supplier;
 

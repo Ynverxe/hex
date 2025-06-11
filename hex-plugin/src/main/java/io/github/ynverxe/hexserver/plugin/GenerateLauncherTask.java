@@ -1,6 +1,6 @@
-package com.github.ynverxe.hexserver.helper;
+package io.github.ynverxe.hexserver.plugin;
 
-import com.github.ynverxe.hexserver.helper.file.ServerFilesHandler;
+import io.github.ynverxe.hexserver.plugin.file.ServerFilesHandler;
 import org.gradle.api.Action;
 import org.gradle.api.Incubating;
 import org.gradle.api.Task;

@@ -1,6 +1,6 @@
-package com.github.ynverxe.hexserver.helper;
+package io.github.ynverxe.hexserver.plugin;
 
-import com.github.ynverxe.hexserver.helper.run.RunHexServerTask;
+import io.github.ynverxe.hexserver.plugin.run.RunHexServerTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 

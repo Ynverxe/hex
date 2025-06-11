@@ -21,7 +21,7 @@ gradlePlugin {
     plugins {
         create("hex-plugin") {
             id = "hex-plugin"
-            implementationClass = "com.github.ynverxe.hexserver.helper.HexPlugin"
+            implementationClass = "io.github.ynverxe.hexserver.plugin.HexPlugin"
             description = "Gradle plugin which implements utility task for hex-server"
         }
     }
