@@ -11,7 +11,7 @@ the copy-spec of the task. Additionally, the tasks has the following behaviour:
 
 ### runHexServer (RunHexServerTask)
 
-RunHexServerTask is extends from [org.gradle.api.tasks.JavaExec](https://docs.gradle.org/current/kotlin-dsl/gradle/org.gradle.api.tasks/-java-exec/index.html). It allows
+RunHexServerTask extends from [org.gradle.api.tasks.JavaExec](https://docs.gradle.org/current/kotlin-dsl/gradle/org.gradle.api.tasks/-java-exec/index.html). It allows
 you to run a hex-server on a Gradle task for testing purposes. The JAR used to run the server must be specified manually, it can be a Jar task or a path to a JAR file.
 Additionally, this task allows you to add extensions generated from a Jar task.
 
