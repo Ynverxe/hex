@@ -24,6 +24,10 @@ import java.util.concurrent.Callable;
 @Incubating
 public class GenerateLauncherTask extends Jar {
 
+  private static final String LAUNCHER_ID = "hex-launcher";
+  private static final String LAUNCHER_PATHNAME = "launcher";
+  private static final String SHADOW_JAR_PATH = ":%1$s:shadowJar".formatted(LAUNCHER_ID);
+
   private @Nullable ServerFilesHandler serverFilesHandler;
   private @Nullable Jar jarTask;
 
@@ -75,7 +79,7 @@ public class GenerateLauncherTask extends Jar {
 
       return getProject().getGradle()
           .includedBuild("hex-server")
-          .task(":launcher:shadowJar");
+          .task(SHADOW_JAR_PATH);
     });
   }
 
@@ -86,7 +90,7 @@ public class GenerateLauncherTask extends Jar {
 
     if (this.jarTask == null) {
       pathToLauncher = getProject().getGradle().includedBuild("hex-server").getProjectDir().toPath()
-          .resolve("launcher")
+          .resolve(LAUNCHER_PATHNAME)
           .resolve("build")
           .resolve("libs")
           .resolve("launcher-all.jar");
