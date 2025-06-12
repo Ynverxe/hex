@@ -1,6 +1,6 @@
 ## Overview
 
-```hex-launcher-plugin``` defines a Gradle plugin which adds two useful tasks: ``generateLauncher`` and ``runHexServer``.
+```hex-plugin``` defines a Gradle plugin which adds two useful tasks: ``generateLauncher`` and ``runHexServer``.
 
 ### generateLauncher (GenerateLauncherTask)
 
@@ -29,13 +29,13 @@ git clone https://github.com/Ynverxe/hex
 ### 2. Use it as an included build in your ``settings.gradle.kts``
 ```kotlin
 pluginManagement {
-  includeBuild("path-to-the-project/launcher-plugin")
+  includeBuild("path-to-the-project/hex-plugin")
 }
 ```
 
 ### 3. Apply it in your ``build.gradle.kts``
 ```kotlin
 plugins {
-  id("launcher-helper")
+  id("hex-plugin")
 }
 ```
