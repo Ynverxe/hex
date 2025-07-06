@@ -14,7 +14,7 @@ In order to run a hex server, first you have to build the [launcher module](http
 
 ## Launcher behaviour
 
-A final step is required in order to run the generated launcher: you must specify the Minestom artifact to be used at runtime. By default, neither the ``core`` nor the ``core`` packages include Minestom. Since Minestom is frequently updated and often modified by third parties, bundling it into the launcher would require rebuilding the launcher every time a bug is patched or a new feature is added — which is not very efficient.
+A final step is required in order to run the generated launcher: you must specify the Minestom artifact to be used at runtime. By default, neither the ``core`` nor the ``launcher`` modules include Minestom. Since Minestom is frequently updated and often modified by third parties, bundling it into the launcher would require rebuilding the launcher every time a bug is patched or a new feature is added — which is not very efficient.
 To specify the Minestom library to use, create a minestom-source.conf file inside the server directory. This file should contain the Maven coordinates of the artifact and the Maven repository from which the artifact will be downloaded.
 
 ### ```minestom-source.conf``` example:
@@ -30,15 +30,15 @@ repositories = [
 
 | Name | Directory Name | Category | Description | Published |
 |------|----------------|----------|-------------|-----------|
-| hex-core | core | Production | Defines main functionallity of the server | ✔️ |
-| hex-launcher | launcher | Production | Defines logic to launch :core | ✔️ |
-| hex-logging | logging | Production | Defines logging logic which is used in :core and :launcher | ✔️ |
+| hex-core | core           | Production | Defines main functionallity of the server | ✔️ |
+| hex-launcher | launcher       | Production | Defines logic to launch :core | ✔️ |
+| hex-logging | logging        | Production | Defines logging logic which is used in :core and :launcher | ✔️ |
 | hex-demo-extension | demo-extension | Testing | Defines an extension which is used in :core unit tests | ❌ | 
-| hex-lab | lab | Testing | Defines an extension for manual testing purposes | ❌ |
-| hex-launcher-plugin | launcher-plugin | Production | Defines a Gradle plugin | ❌ |
+| hex-lab | lab            | Testing | Defines an extension for manual testing purposes | ❌ |
+| hex-plugin | hex-plugin     | Production | Defines a Gradle plugin | ❌ |
 
-## The launcher-plugin
-TODO
+## The hex-plugin
+[Here](https://github.com/Ynverxe/hex/blob/dev/hex-plugin/README.md)
 
 ## License
 This project is licensed under the MIT-License.
